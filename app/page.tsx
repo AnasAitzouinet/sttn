@@ -68,7 +68,7 @@ const NavLink = ({ name }: { name: string }) => {
     >
       <a href="#">{name}</a>
       <motion.div
-        className="border-b"
+        className="border-b border-white"
         initial={{ width: 0 }}
         whileHover={{ width: "100%" }}
         transition={{ duration: 0.5 }}
