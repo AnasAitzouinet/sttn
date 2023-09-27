@@ -49,11 +49,11 @@ const Contact = () => {
           </LoadScript>
         </div>
         <form
-          className=" h-full border w-2/5 left-24 top-0 py-10 absolute
+          className=" h-full  w-2/5 left-24 top-0 py-10 absolute
         flex flex-col justify-start items-center gap-2
         "
         >
-          <h1 className="font-bold text-5xl text-center w-full">
+          <h1 className="font-bold text-5xl text-center w-full text-black">
             Get in <span className="text-sky-400 capitalize">touch</span>
           </h1>
           <span className="text-gray-500 text-sm  font-medium text-center w-full">
@@ -87,7 +87,7 @@ const Contact = () => {
           >
             Send
           </button>
-          <aside className="border flex justify-center items-center border-rded-600 w-full pt-7 gap-5">
+          <aside className=" flex justify-center items-center  w-full pt-7 gap-5">
             <div className="flex justify-start items-center ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -115,7 +115,7 @@ const Contact = () => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-8 h-8"
+                className="w-8 h-8 text-black"
               >
                 <path
                   strokeLinecap="round"
