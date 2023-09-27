@@ -1,6 +1,8 @@
 "use client";
 import Cta from "@/components/cta";
 import React, { useRef, useState } from "react";
+import { AiOutlineClose } from "react-icons/ai";
+import { RxHamburgerMenu } from "react-icons/rx";
 interface TestsoProps {
   children: React.ReactNode;
 }
@@ -83,19 +85,21 @@ export default function Home() {
   const inView = useInView(ref, { once: true });
   const col = useRef(null);
   const inViewCol = useInView(col, { once: true });
+  const [open, setOpen] = useState(false);
   return (
     <main
       className="h-screen w-screen flex justify-center items-center bg-cover bg-center bg-no-repeat
-      overflow-hidden
+      overflow-x-hidden relative 
       "
       style={{
         backgroundImage: "url('/ee.jpg')",
         backgroundSize: "cover",
+        backgroundAttachment: "fixed",
       }}
     >
       <section
         className={`h-full w-full 
-        flex flex-col justify-between items-center
+        flex flex-col justify-between items-center 
        ${Poppinss.className}`}
         style={{
           background:
@@ -106,7 +110,78 @@ export default function Home() {
           <h1 className="py-3  text-center text-white font-bold text-3xl">
             Navbar
           </h1>
-          <div>
+          <div className="text-white lg:hidden" onClick={() => setOpen(!open)}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-8 h-8"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+              />
+            </svg>
+          </div>
+          <motion.div
+            initial={{ x: open ? "100%" : 0 }}
+            animate={{ x: open ? 0 : "100%" }}
+            transition={{ duration: 0.5 }}
+            className={`h-full w-2/3 fixed top-0 right-0 z-20 bg-gray-300 opacity-0
+            transition-colors duration-500 ease-in-out flex flex-col items-center justify-start gap-16 
+            ${
+              open ? "shadow-[-30px_14px_100px_1px_#a0aec0] opacity-100 " : ""
+            } `}
+          >
+            <button
+              onClick={() => setOpen(!open)}
+              className="text-left w-full px-2 py-3"
+            >
+              <AiOutlineClose />
+            </button>
+            <div>
+              <ul className="text-gray-700 flex flex-col items-center gap-3 font-extralight w-full">
+                <li>
+                  <a href="#" className="flex gap-2 items-center justify-center ">
+                  
+                    Home
+                  </a>
+                </li>
+                
+                <li>
+                  <a href="#">
+    
+                    Who we are ?
+                    
+                    </a>
+                </li>
+                <li>
+                  <a href="#">Destinations</a>
+                </li>
+                <li>
+                  <a href="#">Contact us</a>
+                </li>
+                <div className="border w-3/4 border-gray-900"></div>
+                <li>
+                  <a href="#">Sign up</a>
+                </li>
+              </ul>
+            </div>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: open ? 1 : 0 }}
+            transition={{ duration: 0.7 }}
+            className={
+              open
+                ? "h-full w-full fixed top-0 left-0 z-10 bg-transparent backdrop-blur-sm shadow-lg "
+                : "hidden"
+            }
+          ></motion.div>
+          <div className="hidden lg:flex">
             <ul className="text-white flex items-center gap-5 font-extralight">
               <NavLink name="Home" />
               <NavLink name="Destinations" />
@@ -123,7 +198,7 @@ export default function Home() {
             opacity: inView ? 1 : 0,
             transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
           }}
-          className="flex flex-col justify-center items-center h-full w-full px-7 py-5"
+          className="flex flex-col justify-center items-center h-full w-full px-7 py-5 "
         >
           <article className="flex flex-col pt-9 justify-center   items-center    h-full">
             <h2 className="text-xl text-center sm:text-4xl text-gray-100 font-bold">
@@ -135,7 +210,7 @@ export default function Home() {
             <Link
               href={"/Destinations"}
               prefetch={false}
-              className="w-1/4 py-3 border border-gray-400/40 bg-sky-200/20  text-center
+              className="sm:w-1/4 w-full py-3 border border-gray-400/40 bg-sky-200/20  text-center
             text-white hover:bg-sky-400/10 transition-all duration-500 ease-in-out
             backdrop-blur-sm my-5 rounded-full"
             >
@@ -146,13 +221,13 @@ export default function Home() {
         </section>
         <div
           ref={col}
-          className="py-5  w-full flex flex-col pl-16 "
+          className="py-5  w-full flex flex-col px-5 sm:pl-16 "
           style={{
             background: "linear-gradient(0deg, #fff 1%, transparent 20%)",
           }}
         >
           <h1
-            className="text-white text-2xl font-medium py-2"
+            className="text-white text-xl sm:text-2xl font-medium py-2 w-full"
             style={{
               transform: inViewCol ? "none" : "translateX(200px)",
               opacity: inViewCol ? 1 : 0,
@@ -162,7 +237,7 @@ export default function Home() {
             Top Vacation Destinations
           </h1>
           <div
-            className="flex justify-start items-center gap-3"
+            className="flex sm:flex-row flex-col  justify-start items-center gap-3"
             style={{
               transform: inViewCol ? "none" : "translateX(200px)",
               opacity: inViewCol ? 1 : 0,

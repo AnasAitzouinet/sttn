@@ -83,27 +83,30 @@ const Tours = () => {
   const [ref] = useKeenSlider<HTMLDivElement>({
     breakpoints: {
       "(min-width: 400px)": {
-        slides: { perView: 2, spacing: 5 },
+        slides: { perView: 2, spacing: 5 ,},
       },
-      "(min-width: 1000px)": {
+      "(min-width: 768px)": {
+        slides: { perView: 3, spacing: 15 },
+      },
+      "(min-width: 1024px)": {
         slides: { perView: 4, spacing: 15 },
       },
     },
-    slides: { perView: 1 },
+    slides: { perView: 2 , spacing:5 },
   });
   return (
     <div ref={ref} className="keen-slider">
       {trips.map((trip) => (
         <div
           key={trip.id}
-          className="keen-slider__slide h-1/3 relative cursor-pointer rounded-xl  border border-gray-400/60 "
+          className="keen-slider__slide h- relative cursor-pointer rounded-xl  border border-gray-400/60 "
           onMouseEnter={() => setHovered(trip.id)}
           onMouseLeave={() => setHovered(null)} // Reset to null on mouse leave
         >
           <img
             src={trip.img}
             alt={trip.title}
-            className={`object-cover h-[50vh] w-[55vh] duration-500 transition-all ease-in-out
+            className={`object-cover h-full w-full duration-500 transition-all ease-in-out
             ${
               hovered === trip.id
                 ? "scale-125 duration-500 transition-all "
@@ -122,10 +125,10 @@ const Tours = () => {
                 "linear-gradient(180deg, rgba(8, 8, 8, 0) 0%, rgba(8, 8, 8, 0.9) 100%)",
             }}
           >
-            <h2 className="text-white text-xl font-semibold text-center">
+            <h2 className="text-white text-sm sm:text-xl font-semibold text-center">
               {trip.title}
             </h2>
-            <div className="text-gray-300 text-sm 
+            <div className="text-gray-300 text-xs sm:text-sm
             flex justify-center items-center gap-1
             font-medium w-full text-center">
               <IoLocationOutline />
