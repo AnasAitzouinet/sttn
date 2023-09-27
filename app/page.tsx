@@ -129,9 +129,9 @@ export default function Home() {
           <motion.div
             initial={{ x: open ? "100%" : 0 }}
             animate={{ x: open ? 0 : "100%" }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.2 }}
             className={`h-full w-2/3 fixed top-0 right-0 z-20 bg-gray-300 opacity-0
-            transition-colors duration-500 ease-in-out flex flex-col items-center justify-start gap-16 
+            transition-colors  ease-in-out flex flex-col items-center justify-start gap-16 
             ${
               open ? "shadow-[-30px_14px_100px_1px_#a0aec0] opacity-100 " : ""
             } `}
@@ -172,6 +172,7 @@ export default function Home() {
             </div>
           </motion.div>
           <motion.div
+          onClick={()=> setOpen(!open)}
             initial={{ opacity: 0 }}
             animate={{ opacity: open ? 1 : 0 }}
             transition={{ duration: 0.7 }}
