@@ -3,6 +3,7 @@ import React from "react";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { IoLocationOutline } from "react-icons/io5";
+import Reserverations from "@/components/Reservations/Reserverations";
 const trips = [
   {
     id: 1,
@@ -83,7 +84,7 @@ const Tours = () => {
   const [ref] = useKeenSlider<HTMLDivElement>({
     breakpoints: {
       "(min-width: 400px)": {
-        slides: { perView: 2, spacing: 5 ,},
+        slides: { perView: 2, spacing: 5 },
       },
       "(min-width: 768px)": {
         slides: { perView: 3, spacing: 15 },
@@ -92,50 +93,53 @@ const Tours = () => {
         slides: { perView: 4, spacing: 15 },
       },
     },
-    slides: { perView: 2 , spacing:5 },
+    slides: { perView: 2, spacing: 5 },
   });
   return (
     <div ref={ref} className="keen-slider">
       {trips.map((trip) => (
-        <div
-          key={trip.id}
-          className="keen-slider__slide h- relative cursor-pointer rounded-xl  border border-gray-400/60 "
-          onMouseEnter={() => setHovered(trip.id)}
-          onMouseLeave={() => setHovered(null)} // Reset to null on mouse leave
-        >
-          <img
-            src={trip.img}
-            alt={trip.title}
-            className={`object-cover h-full w-full duration-500 transition-all ease-in-out
+        <Reserverations key={trip.id} id={trip.id} title={trip.title}>
+          <div
+            className="keen-slider__slide h- relative cursor-pointer rounded-xl  border border-gray-400/60 "
+            onMouseEnter={() => setHovered(trip.id)}
+            onMouseLeave={() => setHovered(null)} // Reset to null on mouse leave
+          >
+            <img
+              src={trip.img}
+              alt={trip.title}
+              className={`object-cover h-full w-full duration-500 transition-all ease-in-out
             ${
               hovered === trip.id
                 ? "scale-125 duration-500 transition-all "
                 : ""
             }
             `}
-          />
-          <div
-            className={`absolute top-0 left-0 text-center flex flex-col 
+            />
+            <div
+              className={`absolute top-0 left-0 text-center flex flex-col 
             items-center justify-end h-full w-full py-2 duration-500 transition-all ease-in-out
            
           `}
-            style={{
-              borderRadius: "0.75rem",
-              background:
-                "linear-gradient(180deg, rgba(8, 8, 8, 0) 0%, rgba(8, 8, 8, 0.9) 100%)",
-            }}
-          >
-            <h2 className="text-white text-sm sm:text-xl font-semibold text-center">
-              {trip.title}
-            </h2>
-            <div className="text-gray-300 text-xs sm:text-sm
+              style={{
+                borderRadius: "0.75rem",
+                background:
+                  "linear-gradient(180deg, rgba(8, 8, 8, 0) 0%, rgba(8, 8, 8, 0.9) 100%)",
+              }}
+            >
+              <h2 className="text-white text-sm sm:text-xl font-semibold text-center">
+                {trip.title}
+              </h2>
+              <div
+                className="text-gray-300 text-xs sm:text-sm
             flex justify-center items-center gap-1
-            font-medium w-full text-center">
-              <IoLocationOutline />
-              {trip.city}
+            font-medium w-full text-center"
+              >
+                <IoLocationOutline />
+                {trip.city}
+              </div>
             </div>
           </div>
-        </div>
+        </Reserverations>
       ))}
     </div>
   );

@@ -2,7 +2,6 @@
 import Cta from "@/components/cta";
 import React, { useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import { RxHamburgerMenu } from "react-icons/rx";
 interface TestsoProps {
   children: React.ReactNode;
 }
@@ -10,7 +9,7 @@ import { Crimson_Pro, Poppins } from "next/font/google";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
+import Auth from "@/components/Auth/Auth";
 const Poppinss = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -53,7 +52,7 @@ const trips = [
     city: "Culturalopolis",
   },
 ];
-const NavLink = ({ name }: { name: string }) => {
+const NavLink = ({ name, paths }: { name: string; paths: string }) => {
   const [isHovered, setIsHovered] = useState(false);
   const path = usePathname();
   return (
@@ -68,7 +67,7 @@ const NavLink = ({ name }: { name: string }) => {
             }
         `}
     >
-      <a href="#">{name}</a>
+      <a href={paths}>{name}</a>
       <motion.div
         className="border-b border-white"
         initial={{ width: 0 }}
@@ -145,24 +144,22 @@ export default function Home() {
             <div>
               <ul className="text-gray-700 flex flex-col items-center gap-3 font-extralight w-full">
                 <li>
-                  <a href="#" className="flex gap-2 items-center justify-center ">
-                  
+                  <a
+                    href="/"
+                    className="flex gap-2 items-center justify-center "
+                  >
                     Home
                   </a>
                 </li>
-                
+
                 <li>
-                  <a href="#">
-    
-                    Who we are ?
-                    
-                    </a>
+                  <a href="/Who-we-are">Who we are ?</a>
                 </li>
                 <li>
-                  <a href="#">Destinations</a>
+                  <a href="/Destinations">Destinations</a>
                 </li>
                 <li>
-                  <a href="#">Contact us</a>
+                  <a href="/Contact-us">Contact us</a>
                 </li>
                 <div className="border w-3/4 border-gray-900"></div>
                 <li>
@@ -172,7 +169,7 @@ export default function Home() {
             </div>
           </motion.div>
           <motion.div
-          onClick={()=> setOpen(!open)}
+            onClick={() => setOpen(!open)}
             initial={{ opacity: 0 }}
             animate={{ opacity: open ? 1 : 0 }}
             transition={{ duration: 0.7 }}
@@ -184,11 +181,13 @@ export default function Home() {
           ></motion.div>
           <div className="hidden lg:flex">
             <ul className="text-white flex items-center gap-5 font-extralight">
-              <NavLink name="Home" />
-              <NavLink name="Destinations" />
-              <NavLink name="Who we are ?" />
-              <NavLink name="Contact us" />
-              <NavLink name="Sign up" />
+              <NavLink name="Home" paths="/" />
+              <NavLink name="Destinations" paths="/Destinations" />
+              <NavLink name="Who we are ?" paths="/Who-we-are" />
+              <NavLink name="Contact us" paths="Contact-us" />
+              <Auth>
+                <NavLink name="Sign up" paths="#" />
+              </Auth>
             </ul>
           </div>
         </nav>

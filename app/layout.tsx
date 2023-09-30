@@ -1,9 +1,12 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Inter , Poppins ,Nunito } from "next/font/google";
+import { Inter, Poppins, Nunito } from "next/font/google";
 
-const inter = Nunito({ subsets: ["latin"], weight: ["200","300","400", "500", "600", "700","800","900"] });
+
+const inter = Nunito({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,18 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        {" "}
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
-      </body>
-    </html>
+      <html lang="en" suppressHydrationWarning >
+        <body className={inter.className}> {children}</body>
+      </html>
   );
 }
