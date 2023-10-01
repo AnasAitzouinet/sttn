@@ -84,23 +84,30 @@ const Tours = () => {
   const [ref] = useKeenSlider<HTMLDivElement>({
     breakpoints: {
       "(min-width: 400px)": {
-        slides: { perView: 2, spacing: 5 },
+        slides: { perView: 2.5, spacing: 5, origin: "auto" },
       },
       "(min-width: 768px)": {
-        slides: { perView: 3, spacing: 15 },
+        slides: { perView: 3.5, spacing: 15, origin: "auto" },
       },
       "(min-width: 1024px)": {
-        slides: { perView: 4, spacing: 15 },
+        slides: { perView: 4.5, spacing: 15, origin: "auto" },
       },
     },
     slides: { perView: 2, spacing: 5 },
   });
   return (
-    <div ref={ref} className="keen-slider">
+    <div ref={ref} className="keen-slider relative w-full">
+      <div
+        className="absolute top-0 right-0 w-[3%]  self-end h-full z-20 rounded-lg "
+        style={{ 
+          background:
+            "linear-gradient(-90deg, rgb(8, 8, 8) 0%, transparent 100%)",
+        }}
+      ></div>
       {trips.map((trip) => (
         <Reserverations key={trip.id} id={trip.id} title={trip.title}>
           <div
-            className="keen-slider__slide h- relative cursor-pointer rounded-xl  border border-gray-400/60 "
+            className="keen-slider__slide h- relative cursor-pointer overflow-hidden rounded-xl  border border-gray-300/40 "
             onMouseEnter={() => setHovered(trip.id)}
             onMouseLeave={() => setHovered(null)} // Reset to null on mouse leave
           >
@@ -121,7 +128,7 @@ const Tours = () => {
            
           `}
               style={{
-                borderRadius: "0.75rem",
+                
                 background:
                   "linear-gradient(180deg, rgba(8, 8, 8, 0) 0%, rgba(8, 8, 8, 0.9) 100%)",
               }}

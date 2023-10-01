@@ -1,7 +1,7 @@
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter, Poppins, Nunito } from "next/font/google";
-
 
 const inter = Nunito({
   subsets: ["latin"],
@@ -19,8 +19,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-      <html lang="en" suppressHydrationWarning >
-        <body className={inter.className}> {children}</body>
-      </html>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider defaultTheme="light">{children}</ThemeProvider>
+      </body>
+    </html>
   );
 }

@@ -9,14 +9,8 @@ const Montserrats = Montserrat({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 import toast, { Toaster } from "react-hot-toast";
-
-interface Notif {
-  message: string;
-  status: string;
-}
-const notify = ({ message, status }: Notif) => {
-  status === "success" ? toast.success(message) : toast.error(message);
-};
+import Input from "@/components/costumeInputs/Inputs";
+import notify from "@/components/costumeInputs/Notify";
 const Contact = () => {
   const mapStyles = {
     height: "100%",
@@ -116,7 +110,7 @@ const Contact = () => {
       absolute top-0 right-0
       "
       ></div>
-      <div className="w-screen z-0 h-screen bg-[#eeeeee]  top-0 ">
+      <div className="w-screen z-0 h-screen bg-[#eeeeee] top-0 ">
         <motion.div
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
@@ -153,10 +147,10 @@ const Contact = () => {
             <Loader />
           ) : (
             <>
-              <input
+              <Input
                 type="text"
                 placeholder={`Subject`}
-                className={`mt-6 w-full bg-transparent border border-gray-400 rounded-full ${
+                className={`mt-6 w-full bg-transparent border   text-black  border-gray-400 rounded-full ${
                   formError.SubjectError === true
                     ? "border-red-600 text-red-400 placeholder:text-red-600 scale-110 transition-all focus:border-red-600 focus:ring-0 focus:outline-0 placeholder:italic"
                     : ""
@@ -164,10 +158,10 @@ const Contact = () => {
                 onChange={(e) => setSubject(e.target.value)}
                 value={Subject}
               />
-              <input
+              <Input
                 type="text"
                 placeholder="Email "
-                className={` w-full border border-gray-400 bg-transparent rounded-full ${
+                className={` w-full border border-gray-400   text-black bg-transparent rounded-full ${
                   formError.EmailError === true
                     ? "border-red-600 text-red-400 placeholder:text-red-600 scale-110 transition-all focus:border-red-600 focus:ring-0 focus:outline-0 placeholder:italic"
                     : ""
@@ -175,10 +169,10 @@ const Contact = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 value={Email}
               />
-              <input
+              <Input
                 type="text"
                 placeholder="Phone "
-                className={` w-full border border-gray-400 bg-transparent rounded-full ${
+                className={` w-full border border-gray-400  text-black bg-transparent rounded-full ${
                   formError.PhoneError === true
                     ? "border-red-600 text-red-400 placeholder:text-red-600 scale-110 transition-all focus:border-red-600 focus:ring-0 focus:outline-0 placeholder:italic"
                     : ""
@@ -190,7 +184,7 @@ const Contact = () => {
                 cols={30}
                 rows={8}
                 placeholder="Message"
-                className={` w-full border border-gray-400 bg-transparent rounded-xl ${
+                className={` w-full border border-gray-400 text-black bg-transparent rounded-xl ${
                   formError.MessageError === true
                     ? "border-red-600 text-red-400 mt-3 placeholder:text-red-600 scale-110 transition-all focus:border-red-600 focus:ring-0 focus:outline-0 placeholder:italic"
                     : ""

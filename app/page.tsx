@@ -1,15 +1,16 @@
 "use client";
 import Cta from "@/components/cta";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
-interface TestsoProps {
-  children: React.ReactNode;
-}
-import { Crimson_Pro, Poppins } from "next/font/google";
+import { Poppins } from "next/font/google";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Auth from "@/components/Auth/Auth";
+import NavLink from "@/components/Navbar";
+import { useRouter } from "next/navigation";
+import CheckAuth from "@/components/ServerCompoents/CheckAuth";
+import { JwtPayload } from "jsonwebtoken";
 const Poppinss = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -52,39 +53,34 @@ const trips = [
     city: "Culturalopolis",
   },
 ];
-const NavLink = ({ name, paths }: { name: string; paths: string }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const path = usePathname();
-  return (
-    <motion.li
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      className={`
-            ${
-              name === "Sign up"
-                ? "border border-gray-400/40 bg-sky-200/20  text-center  text-white hover:bg-sky-400/10 transition-all duration-500 ease-in-out backdrop-blur-sm px-5 py-2 rounded-full"
-                : ""
-            }
-        `}
-    >
-      <a href={paths}>{name}</a>
-      <motion.div
-        className="border-b border-white"
-        initial={{ width: 0 }}
-        whileHover={{ width: "100%" }}
-        transition={{ duration: 0.5 }}
-        animate={{ width: name === "Home" ? "100%" : isHovered ? "100%" : 0 }}
-      ></motion.div>
-    </motion.li>
-  );
-};
+
+// const CheckAuths = () => {
+//   try {
+//     "use server"
+//     const auth = CheckAuth();
+//     return auth;
+//   } catch (error) {
+//      console.error(error)
+//   }
+// }
 
 export default function Home() {
+  const router = useRouter();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   const col = useRef(null);
   const inViewCol = useInView(col, { once: true });
   const [open, setOpen] = useState(false);
+  const [auth, setAuth] = useState<string | false | JwtPayload>(false);
+  useEffect(() => {
+    const checkAuth = async () => {
+      const result = await CheckAuth();
+      setAuth(result);
+    };
+
+    checkAuth();
+  }, []);
+  console.log(auth);
   return (
     <main
       className="h-screen w-screen flex justify-center items-center bg-cover bg-center bg-no-repeat
@@ -185,9 +181,19 @@ export default function Home() {
               <NavLink name="Destinations" paths="/Destinations" />
               <NavLink name="Who we are ?" paths="/Who-we-are" />
               <NavLink name="Contact us" paths="Contact-us" />
-              <Auth>
-                <NavLink name="Sign up" paths="#" />
-              </Auth>
+              {auth ? (
+                <Avatar
+                  onClick={() => router.push("/Profile")}
+                  className="cursor-pointer"
+                >
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              ) : (
+                <Auth>
+                  <NavLink name="Sign up"/>
+                </Auth>
+              )}
             </ul>
           </div>
         </nav>

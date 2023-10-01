@@ -4,6 +4,7 @@ import SearchBar from "@/components/SearchBar";
 import React from "react";
 import Tours from "./Tours";
 import Other from "./Other";
+import NavLink from "@/components/Navbar";
 
 const Destinations = () => {
   return (
@@ -22,13 +23,18 @@ const Destinations = () => {
             "linear-gradient(180deg, rgb(8, 8, 8) 4%, transparent 70%)",
         }}
       >
-        <nav className="w-screen flex flex-col items-center justify-center gap-1  py-2 ">
-          {/* <h1 className="text-white font-semibold text-3xl ">Destinations</h1> */}
+        <nav className="w-screen flex flex-row items-center justify-around gap-1  py-2 text-white font-extralight">
+          <ul className="text-white flex items-center gap-5 font-extralight">
+            <NavLink name="Home" paths="/" />
+            <NavLink name="Destinations" paths="/Destinations" />
+            <NavLink name="Who we are ?" paths="/Who-we-are" />
+            <NavLink name="Contact us" paths="Contact-us" />
+          </ul>
           <SearchBar />
         </nav>
         <section
           className="
-        px-5 py-5  gap-2 flex flex-col
+        px-5 py-5  gap-2 flex flex-col 
         "
         >
           <h1
@@ -38,6 +44,7 @@ const Destinations = () => {
           >
             Trips :
           </h1>
+          
           <Tours />
         </section>
         <section
@@ -64,7 +71,7 @@ const Destinations = () => {
           text-3xl text-white font-bold px-8 
           "
           >
-            Others :  
+            Others :
           </h1>
           <Other />
         </section>

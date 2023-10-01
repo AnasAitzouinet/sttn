@@ -1,67 +1,43 @@
 "use client";
-import React, { useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import UseAnimations from "react-useanimations";
-import menu2 from "react-useanimations/lib/menu2";
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarTrigger,
-} from "@/components/ui/menubar";
+import Cta from "@/components/cta";
+import React, { useRef, useState } from "react";
+import { AiOutlineClose } from "react-icons/ai";
+interface TestsoProps {
+  children: React.ReactNode;
+}
+import { Crimson_Pro, Poppins } from "next/font/google";
+import { motion, useInView } from "framer-motion";
 import Link from "next/link";
-
-const Navbar = () => {
-  const router = usePathname();
-  const [checked, setChecked] = useState(true);
-
+import { usePathname } from "next/navigation";
+import Auth from "@/components/Auth/Auth";
+const NavLink = ({ name, paths }: { name: string; paths?: string }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const path = usePathname();
+  let pathName = path.split("/")[1];
+  path === '/' ? pathName = 'Home' : pathName
   return (
-    <nav
-      className="absolute z-20 w-screen h-16 flex  item-center 
-     justify-between px-2 sm:justify-around
-    "
+    <motion.li
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className={`
+            ${
+              name === "Sign up"
+                ? "border border-gray-400/40 bg-sky-200/20  text-center  text-white hover:bg-sky-400/10 transition-all duration-500 ease-in-out backdrop-blur-sm px-5 py-2 rounded-full"
+                : ""
+            }
+        `}
     >
-      <h1 className="py-3  text-center text-white font-bold text-xl">Navbar</h1>
-
-      <Menubar>
-        <MenubarMenu>
-          <MenubarTrigger className="bg-transparent sm:hidden">
-            <UseAnimations
-              onClick={() => setChecked(!checked)}
-              animation={menu2}
-              size={50}
-              strokeColor="white"
-            />
-          </MenubarTrigger>
-          <MenubarContent>
-            <MenubarItem>
-              <Link prefetch={false} href={"/"}>
-                Gallery
-              </Link>
-            </MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem>
-            <Link prefetch={false} href={"/Destinations"}>
-                Destinations
-              </Link>
-            </MenubarItem>
-          </MenubarContent>
-        </MenubarMenu>
-      </Menubar>
-
-      <ul className="text-gray-300 font-semibold hidden  sm:flex gap-5 justify-start items-center">
-        <li className={`${router === "/" ? "text-white" : ""} `}>
-          <a href="/">Gallery</a>
-        </li>      
-        <li className={`${router === "/Destinations" ? "text-white" : ""} `}>
-          <a href="/Destinations">Destinations</a>
-        </li>
-      </ul>
-    </nav>
+      <a href={paths}>{name}</a>
+      <motion.div
+        className="border-b border-white"
+        initial={{ width: 0 }}
+        whileHover={{ width: "100%" }}
+        transition={{ duration: 0.5 }}
+        animate={{ width:  pathName === name  ? "100%" : isHovered ? "100%" : 0 }}
+      ></motion.div>
+    </motion.li>
   );
 };
 
-export default Navbar;
+
+export default NavLink;

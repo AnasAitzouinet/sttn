@@ -19,6 +19,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { set } from "date-fns";
+import { parse } from "path";
 interface ReservationProps {
   children: React.ReactNode;
   id: number;
@@ -27,6 +29,17 @@ interface ReservationProps {
   phone?: string;
   FullName?: string;
 }
+
+type Form = {
+  email: string;
+  phone: string;
+  FullName: string;
+  dateFrom: string | null;
+  dateTo: string | null;
+  description: string;
+  language: string;
+  people: number;
+};
 const Reserverations = ({
   children,
   id,
@@ -35,14 +48,40 @@ const Reserverations = ({
   phone,
   FullName,
 }: ReservationProps) => {
-  const [date, setDate] = React.useState<Date>();
+  const [form, setForm] = useState<Form>({
+    email: "",
+    phone: "",
+    FullName: "",
+    dateFrom: null,
+    dateTo: null,
+    description: "",
+    language: "",
+    people: 0,
+  });
 
+  const [formError , setFormError] = useState({
+    email: false,
+    phone: false,
+    FullName: false,
+    dateFrom: false,
+    dateTo: false,
+    description: false,
+    people: false,
+  })
+
+
+  const handleSelectChange = (value: string) => {
+    setForm({ ...form, language: value });
+  };
+
+
+  console.log(form);
   return (
     <Dialog>
       <DialogTrigger>{children}</DialogTrigger>
-      <DialogContent className="flex flex-col justify-center items-center bg-transparent backdrop-blur-3xl">
-        <Tabs defaultValue="Book Now" className="w-full px-5 bg-transparent">
-          <TabsList className="w-full rounded-full ">
+      <DialogContent className="flex flex-col justify-center items-center bg-transparent backdrop-blur-3xl border border-gray-300/40">
+        <Tabs defaultValue="Book Now" className="w-full px-5 ">
+          <TabsList className="w-full rounded-full bg-[#0a0a0a]  border border-gray-300/30">
             <TabsTrigger className="w-full rounded-full  " value="Book Now">
               {title}
             </TabsTrigger>
@@ -51,22 +90,27 @@ const Reserverations = ({
             <h1 className="text-3xl text-white text-center font-bold py-3">
               Make a Reservation
             </h1>
-            <main className="grid grid-rows-1 gap-2 w-full">
-              <aside className=" w-full flex flex-col gap-3">
+            <main className="grid grid-rows-1 gap-2 w-full ">
+              <aside className=" w-full flex flex-col  gap-3">
                 <Input
                   type="text"
                   placeholder="Full Name"
-                  onChange={(e) => console.log(e.target.value)}
+                  className="text-white"
+                  onChange={(e) =>
+                    setForm({ ...form, FullName: e.target.value })
+                  }
                 />
                 <Input
                   type="text"
                   placeholder="Email"
-                  onChange={(e) => console.log(e.target.value)}
+                  className="text-white"
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
                 <Input
                   type="text"
                   placeholder="Phone Number"
-                  onChange={(e) => console.log(e.target.value)}
+                  className="text-white"
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 />
               </aside>
               <aside className="grid grid-rows-2 gap-2 w-full">
@@ -78,9 +122,10 @@ const Reserverations = ({
                     From:
                     <input
                       type="date"
-                      name=""
-                      id=""
-                      className="w-full border border-gray-300 rounded-xl p-2 bg-transparent"
+                      onChange={(e) =>
+                        setForm({ ...form, dateFrom: e.target.value })
+                      }
+                      className="w-full border border-gray-300/40 rounded-xl p-2 bg-transparent"
                     />
                   </label>
                   <label
@@ -90,15 +135,16 @@ const Reserverations = ({
                     to:
                     <input
                       type="date"
-                      name=""
-                      id=""
-                      className="w-full border border-gray-300 rounded-xl p-2 bg-transparent"
+                      onChange={(e) =>
+                        setForm({ ...form, dateTo: e.target.value })
+                      }
+                      className="w-full border border-gray-300/40 rounded-xl p-2 bg-transparent"
                     />
                   </label>
                 </div>
                 <div className=" w-full flex justify-center gap-3">
-                  <Select>
-                    <SelectTrigger className="w-full rounded-xl bg-transparent border-gray-400">
+                  <Select onValueChange={handleSelectChange}>
+                    <SelectTrigger className="w-full rounded-xl bg-transparent border-gray-300/40">
                       <SelectValue placeholder="Language" />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl">
@@ -110,24 +156,23 @@ const Reserverations = ({
                   </Select>
                   <input
                     type="number"
-                    name=""
+                    onChange={(e) => setForm({ ...form, people: parseInt(e.target.value) })}
                     placeholder="Number of People"
-                    className="bg-transparent rounded-xl border border-gray-300 p-2 w-full"
+                    className="bg-transparent rounded-xl border border-gray-300/40 p-2 w-full"
                   />
                 </div>
               </aside>
               <textarea
-                name=""
-                id=""
+               onChange={(e) => setForm({ ...form, description: e.target.value })}
                 cols={5}
                 rows={5}
                 placeholder="Message"
-                className="w-full border border-gray-300 rounded-xl p-2 bg-transparent
+                className="w-full border border-gray-300/40 rounded-xl p-2 bg-transparent
               
               "
               />
               <button
-                className="w-full bg-blue-700/50 backdrop-blur-xl
+                className="w-full bg-blue-700/50 backdrop-blur-xl border border-gray-300/10
               hover:bg-blue-700/70 duration-300 transition-all ease-in-out
               rounded-xl text-white py-2 font-semibold"
               >
