@@ -79,7 +79,7 @@ interface Trip {
   city: string;
 }
 
-const Tours = () => {
+const Activites = () => {
   const [hovered, setHovered] = React.useState<number | null>(null); // Initialize with null
   const [ref] = useKeenSlider<HTMLDivElement>({
     breakpoints: {
@@ -105,7 +105,7 @@ const Tours = () => {
         }}
       ></div>
       {trips.map((trip) => (
-        <res.Reserverations key={trip.id} id={trip.id} title={trip.title}>
+        <res.ReserverationsActi key={trip.id} id={trip.id} title={trip.title}>
           <div
             className="keen-slider__slide h- relative cursor-pointer overflow-hidden rounded-xl  border border-gray-300/40 "
             onMouseEnter={() => setHovered(trip.id)}
@@ -146,10 +146,10 @@ const Tours = () => {
               </div>
             </div>
           </div>
-        </res.Reserverations>
+        </res.ReserverationsActi>
       ))}
     </div>
   );
 };
 
-export default Tours;
+export default Activites;

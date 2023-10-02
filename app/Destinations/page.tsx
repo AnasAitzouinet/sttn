@@ -5,6 +5,7 @@ import React from "react";
 import Tours from "./Tours";
 import Other from "./Other";
 import NavLink from "@/components/Navbar";
+import Activites from "./Activities";
 
 const Destinations = () => {
   return (
@@ -59,7 +60,7 @@ const Destinations = () => {
           >
             Activities :
           </h1>
-          <Tours />
+          <Activites />
         </section>
         <section
           className="

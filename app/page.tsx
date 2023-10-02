@@ -87,7 +87,7 @@ export default function Home() {
       overflow-x-hidden relative 
       "
       style={{
-        backgroundImage: "url('/ee.jpg')",
+        backgroundImage: "url('/ees.jpg')",
         backgroundSize: "cover",
         backgroundAttachment: "fixed",
       }}

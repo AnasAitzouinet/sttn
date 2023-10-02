@@ -1,11 +1,14 @@
 "use client";
 import React from "react";
-import Testso from "./sign-in";
-import Reserverations from "@/components/Reservations/Reserverations";
+import { Skeleton } from "@/components/ui/skeleton";
+
 const page = () => {
   return (
-    <div>
-    
+    <div className="w-screen h-screen flex justify-center items-center">
+        <Skeleton
+          className={`h-[20rem] w-[20rem] border border-gray-400/40 rounded-xl
+            `}
+        />
     </div>
   );
 };
