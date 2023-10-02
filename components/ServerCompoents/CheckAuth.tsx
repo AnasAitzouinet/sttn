@@ -17,6 +17,7 @@ const CheckAuth = () => {
   }
   }catch(err){
     console.log(err);
+    return false;
   }
 };
 
