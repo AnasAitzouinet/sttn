@@ -14,7 +14,7 @@ type Form = {
 };
 
 const Profile = () => {
-  const [auth, setAuth] = useState<string | false | JwtPayload>(false);
+  const [auth, setAuth] = useState<string | false | JwtPayload | undefined>(false);
   const [user, setUser] = useState<Form>({
     id: 0,
     name: "",
