@@ -576,11 +576,12 @@ const ReserverationsActi = ({
                   </aside>
                   <aside className="grid grid-rows-2 gap-2 w-full">
                     <div className=" w-full flex  gap-3">
+                  
                       <label
                         htmlFor=""
                         className="flex w-full justify-center items-center gap-2"
                       >
-                        Date :
+                         
                         <input
                           type="date"
                           onChange={(e) =>

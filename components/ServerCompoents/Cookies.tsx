@@ -24,6 +24,7 @@ const Cookies = (CookiesProps: CookiesProps) => {
       maxAge: CookiesProps.options.maxAge,
       path: CookiesProps.options.path,
       sameSite: "lax",
+      secure: true,
     });
     console.log('cookie set')
   }catch(err){
