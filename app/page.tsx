@@ -54,15 +54,6 @@ const trips = [
   },
 ];
 
-// const CheckAuths = () => {
-//   try {
-//     "use server"
-//     const auth = CheckAuth();
-//     return auth;
-//   } catch (error) {
-//      console.error(error)
-//   }
-// }
 
 export default function Home() {
   const router = useRouter();
@@ -80,7 +71,7 @@ export default function Home() {
 
     checkAuth();
   }, []);
-  console.log(auth);
+ 
   return (
     <main
       className="h-screen w-screen flex justify-center items-center bg-cover bg-center bg-no-repeat
@@ -158,9 +149,11 @@ export default function Home() {
                   <a href="/Contact-us">Contact us</a>
                 </li>
                 <div className="border w-3/4 border-gray-900"></div>
+                <Auth>
                 <li>
-                  <a href="#">Sign up</a>
+                  Sign up
                 </li>
+                </Auth>
               </ul>
             </div>
           </motion.div>
@@ -187,7 +180,10 @@ export default function Home() {
                   className="cursor-pointer"
                 >
                   <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
+                    <AvatarFallback className="capitalize">{
+                    //@ts-ignore
+                    auth.name.split(" ").map((name) => name[0]).join("")
+                    }</AvatarFallback>
                 </Avatar>
               ) : (
                 <Auth>
