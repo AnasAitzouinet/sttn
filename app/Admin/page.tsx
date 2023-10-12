@@ -31,7 +31,7 @@ const Admin = () => {
   }, [statue]);
 
   return (
-    <section>
+    <section className="bg-[#ebe9e9]">
       <header className="h-full w-full">
         <div className="w-full h-1/5  flex flex-col  justify-center items-start">
           <h1 className="text-gray-700 text-4xl font-bold px-5 py-5">
@@ -50,7 +50,9 @@ const Admin = () => {
             New
           </span>
         </AdminRes>
-        <DataTable columns={columns} data={data} />
+        <div className="w-full">
+          <DataTable columns={columns} data={data} />
+        </div>
       </div>
     </section>
   );

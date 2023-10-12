@@ -23,8 +23,7 @@ const Cookies = (CookiesProps: CookiesProps) => {
       securedValue, {
       maxAge: CookiesProps.options.maxAge,
       path: CookiesProps.options.path,
-      sameSite: "lax",
-      secure: true,
+      sameSite: "lax"
     });
     console.log('cookie set')
   }catch(err){

@@ -23,6 +23,7 @@ import { TabsList } from "../ui/tabs";
 import { TabsTrigger } from "../ui/tabs";
 import { useEffect, useState } from "react";
 import Loader from "@/components/loader";
+import UseSignUp from "../Auth/SignUp";
 type FormTrip = {
   email: string | any;
   phone: string;
@@ -32,6 +33,7 @@ type FormTrip = {
   description: string;
   language: string;
   people: number;
+  tripID: number;
   userId: number;
 };
 interface ReservationProps {
@@ -71,11 +73,28 @@ export default function AdminRes({ children }: ReservationProps) {
     description: "",
     language: "",
     people: 0,
+    tripID: 0,
     userId: 0,
   });
+  const [formError, setFormError] = useState({
+    email: false,
+    phone: false,
+    FullName: false,
+    dateFrom: false,
+    dateTo: false,
+    people: false,
+  });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+  console.log(formError)
+  },[formError])
   const handleSelectChange = (value: string) => {
     setForm({ ...form, language: value });
+  };
+  const handleSelectChangeTrip = (value: string) => {
+    const newValue = parseInt(value);
+    setForm({ ...form, tripID: newValue });
   };
 
   const [trips, setTrips] = useState<Trips[]>([]);
@@ -86,7 +105,126 @@ export default function AdminRes({ children }: ReservationProps) {
     });
   }, []);
 
+  const handleError = () => {
+    const EmailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
+    const {
+      FullName,
+      email,
+      phone,
+      dateFrom,
+      dateTo,
+      people,
+      language,
+    } = form;
 
+    if (
+      !(
+        FullName &&
+        email &&
+        phone &&
+        phone.length >= 10 &&
+        dateFrom &&
+        dateTo &&
+        people &&
+        language
+      )
+    ) {
+      setFormError({
+        email: !email,
+        phone: !phone,
+        FullName: !FullName,
+        dateFrom: !dateFrom,
+        dateTo: !dateTo,
+        people: !people,
+      });
+      notify({ message: "Please fill all the fields", status: "error" });
+      return false;
+    }
+
+    if (!EmailRegex.test(email)) {
+      setFormError({ ...formError, email: true });
+      notify({ message: "Email is not valid", status: "error" });
+      return false;
+    }
+
+    const dateFromObj = new Date(dateFrom);
+    const dateToObj = new Date(dateTo);
+    const now = new Date();
+
+    if (dateFromObj < now || dateToObj < now) {
+      setFormError({ ...formError, dateFrom: true });
+      notify({ message: "Dates can't be before today", status: "error" });
+      return false;
+    }
+
+    if (dateFromObj >= dateToObj) {
+      setFormError({ ...formError, dateFrom: true });
+      notify({
+        message: "Date from can't be the same as or after date to",
+        status: "error",
+      });
+      return false;
+    }
+
+    if (people < 1) {
+      setFormError({ ...formError, people: true });
+      notify({
+        message: "Number of people can't be less than 1",
+        status: "error",
+      });
+      return false;
+    }
+
+    const newForm = {
+      email,
+      phone,
+      numberOfPersons: people,
+      language,
+      trip: { id: form.tripID },
+      dateFrom,
+      dateTo,
+      userSttn: { id: form.userId },
+    };
+
+    console.log(newForm);
+
+    return newForm;
+  };
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const newForm = handleError();
+    if (!newForm) return;
+    setLoading(true);
+  
+        const register = await UseSignUp({
+          FullName: form.FullName,
+          email: form.email,
+          phone: form.phone,
+        });
+        if (register) {
+          const latestForm = { ...newForm, userSttn: { id: register.data.id } };
+          console.log(latestForm);
+          const res = await fetch(
+            "https://gestionres-production.up.railway.app/ResTrip/",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(latestForm),
+            }
+          );
+          if (res.ok) {
+            setLoading(false);
+            notify({ message: "Reservation created", status: "success" });
+            return;
+          }
+        } else {
+          setLoading(false);
+          notify({ message: "Something went wrong", status: "error" });
+          return;
+        }
+  };
 
 
 
@@ -100,7 +238,7 @@ export default function AdminRes({ children }: ReservationProps) {
             {/* <h1 className="text-3xl text-white text-center font-bold py-3">
               Make a Reservation
             </h1> */}
-            <form className="grid grid-rows-1 gap-2 w-full ">
+            <form className="grid grid-rows-1 gap-2 w-full " onSubmit={handleSubmit}>
               {loading ? (
                 <div className=" h-full flex flex-col justify-center items-center">
                   <Loader
@@ -139,14 +277,14 @@ export default function AdminRes({ children }: ReservationProps) {
                         setForm({ ...form, phone: e.target.value })
                       }
                     />
-                     <Select onValueChange={handleSelectChange}>
+                     <Select onValueChange={handleSelectChangeTrip}>
                         <SelectTrigger className="w-full rounded-xl bg-transparent border-gray-300/40">
                           <SelectValue placeholder="Trips" />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
                           {
                            trips.map((trip) => (
-                            <SelectItem key={trip.id} value={trip.title}>{trip.title}</SelectItem>
+                            <SelectItem key={trip.id} value={trip.id.toString()}>{trip.title}</SelectItem>
                             ))
                           }
                         </SelectContent>

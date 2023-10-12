@@ -30,7 +30,7 @@ const Activities = () => {
   }, [statue]);
 
   return (
-    <section>
+    <section className="bg-[#ebe9e9]">
       <header className="h-full w-full">
         <div className="w-full h-1/5  flex flex-col  justify-center items-start">
           <h1 className="text-gray-700 text-4xl font-bold px-5 py-5">

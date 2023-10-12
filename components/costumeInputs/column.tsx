@@ -16,6 +16,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
+import { DialogClose } from "@radix-ui/react-dialog";
 type Trip = {
   id: number;
   title: string;
@@ -49,6 +50,19 @@ export type Data = {
 };
 
 export type JsonData = Data[];
+const deleteRes = async (id: number) => {
+  const res = await fetch(
+    `https://gestionres-production.up.railway.app/ResTrip/${id}`,
+    {
+      method: "delete",
+    }
+  );
+  if (res.ok) {
+    return res;
+  } else {
+    throw new Error(`HTTP error! status: ${res.status}`);
+  }
+};
 
 const ChangeStatue = async ({ id, statue }: { id: number; statue: string }) => {
   const res = await fetch(
@@ -81,14 +95,20 @@ export const columns: ColumnDef<Data>[] = [
       return (
         <span>
           {row.original.statue === "ACCEPTED" ? (
-            <span className="bg-green-600 text-white py-1 px-2 rounded-full">Accepted</span>
+            <span className="bg-green-600 text-white py-1 px-2 rounded-full">
+              Accepted
+            </span>
           ) : row.original.statue === "NOT_ACCEPTED" ? (
-            <span className="bg-red-600 text-white py-1 px-2 rounded-full">Denied</span>
+            <span className="bg-red-600 text-white py-1 px-2 rounded-full">
+              Denied
+            </span>
           ) : (
-            <span className="bg-yellow-600 text-white py-1 px-2 rounded-full">Pending</span>
+            <span className="bg-yellow-600 text-white py-1 px-2 rounded-full">
+              Pending
+            </span>
           )}
         </span>
-        )
+      );
     },
   },
   {
@@ -265,7 +285,7 @@ export const columns: ColumnDef<Data>[] = [
               </p>
               <p>
                 Description:{" "}
-                <span className="text-gray-100">{data.trip.description}</span>
+                <span className="text-gray-100">{data.details}</span>
               </p>
             </div>
           </DialogContent>
@@ -354,9 +374,16 @@ export const columns: ColumnDef<Data>[] = [
             <div className="flex flex-col text-gray-400">
               <p>you will delete this reservation </p>
               <div className="flex justify-end">
-                <button className="bg-red-700 px-5 py-2 text-white rounded-xl hover:bg-red-600">
-                  Delete
-                </button>
+                <DialogClose>
+                  <button
+                    onClick={() => {
+                      deleteRes(row.original.id);
+                    }}
+                    className="bg-red-700 px-5 py-2 text-white rounded-xl hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
+                </DialogClose>
               </div>
             </div>
           </DialogContent>

@@ -237,7 +237,7 @@ export const columns: ColumnDef<Data>[] = [
               </p>
               <p>
                 Description:{" "}
-                <span className="text-gray-100">{data.activity.description}</span>
+                <span className="text-gray-100">{data.details}</span>
               </p>
             </div>
           </DialogContent>

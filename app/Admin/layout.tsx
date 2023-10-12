@@ -89,6 +89,27 @@ const LayoutAdmin = ({ children }: layoutProps) => {
               </motion.span>
             </div>
             <div
+              onClick={() => router.push("/Admin/Activities")}
+              className="w-full h-[3rem] flex justify-center items-center gap-3
+              bg-[#1f2937] rounded-xl hover:bg-sky-600 transition-all duration-300 ease-in-out cursor-pointer 
+            border border-gray-400/40"
+            >
+              <span>
+                <Users />
+              </span>
+              <motion.span
+                animate={{ opacity: opened ? 1 : 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className={`${
+                  opened ? "block" : "hidden"
+                } text-white font-bold text-xl`}
+              >
+                                All users
+
+              </motion.span>
+            </div>
+            <div
               className="w-full h-[3rem] flex justify-center items-center gap-3
               bg-[#1f2937] rounded-xl hover:bg-sky-700 transition-all duration-300 ease-in-out cursor-pointer 
             border border-gray-400/40"
@@ -104,13 +125,13 @@ const LayoutAdmin = ({ children }: layoutProps) => {
                   opened ? "block" : "hidden"
                 } text-white font-bold text-xl`}
               >
-                All users
+                Add Trip/Activity
               </motion.span>
             </div>
           </div>
         </div>
       </motion.aside>
-      <section className="h-full fixed w-[95%] bg-[#ebe9e9] top-0 right-0">
+      <section className="h-full absolute w-[95%]  top-0 right-0">
         {children}
       </section>
     </main>

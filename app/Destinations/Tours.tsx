@@ -152,7 +152,7 @@ const Tours = () => {
                 src={trip.img}
                 alt={trip.title}
                 onLoad={() => setImagesLoaded(true)}
-                className={`object-cover h-[20rem] w-[22rem] duration-500 transition-all ease-in-out
+                className={`object-cover h-[17rem] w-full duration-500 transition-all ease-in-out
             ${
               hovered === trip.id
                 ? "scale-125 duration-500 transition-all "
