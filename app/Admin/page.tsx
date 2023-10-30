@@ -29,7 +29,7 @@ const Admin = () => {
       setData(data);
     });
   }, [statue]);
-
+14*9
   return (
     <section className="bg-[#ebe9e9]">
       <header className="h-full w-full">

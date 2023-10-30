@@ -65,7 +65,7 @@ const LayoutAdmin = ({ children }: layoutProps) => {
                   opened ? "block" : "hidden"
                 } text-white font-bold text-xl`}
               >
-                Trips
+                Res Trips
               </motion.span>
             </div>
             <div
@@ -85,11 +85,11 @@ const LayoutAdmin = ({ children }: layoutProps) => {
                   opened ? "block" : "hidden"
                 } text-white font-bold text-xl`}
               >
-                Activities
+                Res Activities
               </motion.span>
             </div>
             <div
-              onClick={() => router.push("/Admin/Activities")}
+              onClick={() => router.push("/Admin/Users")}
               className="w-full h-[3rem] flex justify-center items-center gap-3
               bg-[#1f2937] rounded-xl hover:bg-sky-600 transition-all duration-300 ease-in-out cursor-pointer 
             border border-gray-400/40"
@@ -110,6 +110,7 @@ const LayoutAdmin = ({ children }: layoutProps) => {
               </motion.span>
             </div>
             <div
+            onClick={() => router.push("/Admin/Trips")}
               className="w-full h-[3rem] flex justify-center items-center gap-3
               bg-[#1f2937] rounded-xl hover:bg-sky-700 transition-all duration-300 ease-in-out cursor-pointer 
             border border-gray-400/40"
@@ -125,7 +126,27 @@ const LayoutAdmin = ({ children }: layoutProps) => {
                   opened ? "block" : "hidden"
                 } text-white font-bold text-xl`}
               >
-                Add Trip/Activity
+                Trip
+              </motion.span>
+            </div>
+            <div
+            onClick={() => router.push("/Admin/Trips")}
+              className="w-full h-[3rem] flex justify-center items-center gap-3
+              bg-[#1f2937] rounded-xl hover:bg-sky-700 transition-all duration-300 ease-in-out cursor-pointer 
+            border border-gray-400/40"
+            >
+              <span>
+                <Users />
+              </span>
+              <motion.span
+                animate={{ opacity: opened ? 1 : 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className={`${
+                  opened ? "block" : "hidden"
+                } text-white font-bold text-xl`}
+              >
+                Activities
               </motion.span>
             </div>
           </div>

@@ -45,24 +45,27 @@ interface ReservationProps {
   FullName?: string;
 }
 type Trips = {
-    id:number,
-    title: string;
-    img: string;
-    price: number;
-    description: string;
-    city: string;
-}
+  id: number;
+  title: string;
+  img: string;
+  price: number;
+  description: string;
+  city: string;
+};
 const GetTrips = async () => {
-    const res = await fetch("https://gestionres-production.up.railway.app/Trips/", {
-        method: "get",
-    });
-    if (res.ok) {
-        const data = await res.json();
-        return data;
-    } else {
-        throw new Error(`HTTP error! status: ${res.status}`);
+  const res = await fetch(
+    "https://gestionres-production.up.railway.app/Trips/",
+    {
+      method: "get",
     }
-    };
+  );
+  if (res.ok) {
+    const data = await res.json();
+    return data;
+  } else {
+    throw new Error(`HTTP error! status: ${res.status}`);
+  }
+};
 export default function AdminRes({ children }: ReservationProps) {
   const [form, setForm] = useState<FormTrip>({
     email: "",
@@ -87,8 +90,8 @@ export default function AdminRes({ children }: ReservationProps) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-  console.log(formError)
-  },[formError])
+    console.log(formError);
+  }, [formError]);
   const handleSelectChange = (value: string) => {
     setForm({ ...form, language: value });
   };
@@ -107,15 +110,7 @@ export default function AdminRes({ children }: ReservationProps) {
 
   const handleError = () => {
     const EmailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
-    const {
-      FullName,
-      email,
-      phone,
-      dateFrom,
-      dateTo,
-      people,
-      language,
-    } = form;
+    const { FullName, email, phone, dateFrom, dateTo, people, language } = form;
 
     if (
       !(
@@ -190,43 +185,41 @@ export default function AdminRes({ children }: ReservationProps) {
 
     return newForm;
   };
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const newForm = handleError();
     if (!newForm) return;
     setLoading(true);
-  
-        const register = await UseSignUp({
-          FullName: form.FullName,
-          email: form.email,
-          phone: form.phone,
-        });
-        if (register) {
-          const latestForm = { ...newForm, userSttn: { id: register.data.id } };
-          console.log(latestForm);
-          const res = await fetch(
-            "https://gestionres-production.up.railway.app/ResTrip/",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(latestForm),
-            }
-          );
-          if (res.ok) {
-            setLoading(false);
-            notify({ message: "Reservation created", status: "success" });
-            return;
-          }
-        } else {
-          setLoading(false);
-          notify({ message: "Something went wrong", status: "error" });
-          return;
+
+    const register = await UseSignUp({
+      FullName: form.FullName,
+      email: form.email,
+      phone: form.phone,
+    });
+    if (register) {
+      const latestForm = { ...newForm, userSttn: { id: register.data.id } };
+      console.log(latestForm);
+      const res = await fetch(
+        "https://gestionres-production.up.railway.app/ResTrip/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(latestForm),
         }
+      );
+      if (res.ok) {
+        setLoading(false);
+        notify({ message: "Reservation created", status: "success" });
+        return;
+      }
+    } else {
+      setLoading(false);
+      notify({ message: "Something went wrong", status: "error" });
+      return;
+    }
   };
-
-
 
   return (
     <Dialog>
@@ -238,7 +231,10 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
             {/* <h1 className="text-3xl text-white text-center font-bold py-3">
               Make a Reservation
             </h1> */}
-            <form className="grid grid-rows-1 gap-2 w-full " onSubmit={handleSubmit}>
+            <form
+              className="grid grid-rows-1 gap-2 w-full "
+              onSubmit={handleSubmit}
+            >
               {loading ? (
                 <div className=" h-full flex flex-col justify-center items-center">
                   <Loader
@@ -249,7 +245,6 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
               ) : (
                 <>
                   <aside className=" w-full flex flex-col  gap-3">
-                   
                     <Input
                       type="text"
                       placeholder="Full Name"
@@ -277,18 +272,18 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                         setForm({ ...form, phone: e.target.value })
                       }
                     />
-                     <Select onValueChange={handleSelectChangeTrip}>
-                        <SelectTrigger className="w-full rounded-xl bg-transparent border-gray-300/40">
-                          <SelectValue placeholder="Trips" />
-                        </SelectTrigger>
-                        <SelectContent className="rounded-xl">
-                          {
-                           trips.map((trip) => (
-                            <SelectItem key={trip.id} value={trip.id.toString()}>{trip.title}</SelectItem>
-                            ))
-                          }
-                        </SelectContent>
-                      </Select>
+                    <Select onValueChange={handleSelectChangeTrip}>
+                      <SelectTrigger className="w-full rounded-xl bg-transparent border-gray-300/40">
+                        <SelectValue placeholder="Trips" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl">
+                        {trips.map((trip) => (
+                          <SelectItem key={trip.id} value={trip.id.toString()}>
+                            {trip.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </aside>
                   <aside className="grid grid-rows-2 gap-2 w-full">
                     <div className=" w-full flex  gap-3">

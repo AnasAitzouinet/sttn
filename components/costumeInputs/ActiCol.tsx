@@ -16,7 +16,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Input from "./Inputs";
-import { Separator } from "@radix-ui/react-dropdown-menu";
 
 export type Data = {
   id: number;
@@ -24,7 +23,7 @@ export type Data = {
   img: string;
   price: number;
   description: string;
-  city: string;
+  place: string;
 };
 
 import React, { useState } from "react";
@@ -43,12 +42,12 @@ function TripsCol({ row, Close }: Props) {
     img: row.original.img,
     price: row.original.price,
     description: row.original.description,
-    city: row.original.city,
+    place: row.original.place,
   });
   const handelEdit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const res = await fetch(
-      `https://gestionres-production.up.railway.app/Trips/${form.id}`,
+      `https://gestionres-production.up.railway.app/Activity/${form.id}`,
       {
         method: "PUT",
         headers: {
@@ -88,14 +87,14 @@ function TripsCol({ row, Close }: Props) {
         />
       </div>
       <div className="flex flex-col items-start  gap-2">
-        <h3>City</h3>
+        <h3>Place</h3>
         <Input
-          placeholder="City"
+          placeholder="Place"
           type="text"
           onChange={(e) => {
-            setForm({ ...form, city: e.target.value });
+            setForm({ ...form, place: e.target.value });
           }}
-          value={form.city}
+          value={form.place}
           className="text-gray-100"
         />
       </div>
@@ -165,7 +164,7 @@ const UpdateImage = ({ row }: Props) => {
     if (!image) return;
     setImgUrl(image);
     const res = await fetch(
-      `https://gestionres-production.up.railway.app/Trips/${row.original.id}`,
+      `https://gestionres-production.up.railway.app/Activity/${row.original.id}`,
       {
         method: "PUT",
         headers:{
@@ -196,7 +195,7 @@ const UpdateImage = ({ row }: Props) => {
 
 const DeleteTrip = async (id: number) => {
   const res = await fetch(
-    `https://gestionres-production.up.railway.app/Trips/${id}`,
+    `https://gestionres-production.up.railway.app/Activity/${id}`,
     {
       method: "DELETE",
       headers: {
@@ -228,8 +227,8 @@ export const columns: ColumnDef<Data>[] = [
     header: "description",
   },
   {
-    accessorKey: "city",
-    header: "city",
+    accessorKey: "place",
+    header: "Place",
   },
   {
     accessorKey: "img",

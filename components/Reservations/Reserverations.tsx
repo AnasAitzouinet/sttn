@@ -154,7 +154,7 @@ const Reserverations = ({
     const dateFromObj = new Date(dateFrom);
     const dateToObj = new Date(dateTo);
     const now = new Date();
-
+    const SevenDays = new Date(now.setDate(now.getDate() + 7));
     if (dateFromObj < now || dateToObj < now) {
       setFormError({ ...formError, dateFrom: true });
       notify({ message: "Dates can't be before today", status: "error" });
@@ -165,6 +165,14 @@ const Reserverations = ({
       setFormError({ ...formError, dateFrom: true });
       notify({
         message: "Date from can't be the same as or after date to",
+        status: "error",
+      });
+      return false;
+    }
+    if(dateFromObj < SevenDays){
+      setFormError({ ...formError, dateFrom: true });
+      notify({
+        message: "Date from can't be less than 7 days from now",
         status: "error",
       });
       return false;
@@ -477,6 +485,7 @@ const ReserverationsActi = ({
 
     const dateObj = new Date(date);
     const now = new Date();
+    const TwoDAYS = new Date(now.setDate(now.getDate() + 2));
 
     if (dateObj < now) {
       setFormError({ ...formError, date: true });
@@ -484,6 +493,12 @@ const ReserverationsActi = ({
       return false;
     }
 
+    if (dateObj < TwoDAYS) {
+      setFormError({ ...formError, date: true });
+      notify({ message: "Date can't be less than 2 days from now", status: "error" });
+      return false;
+    }
+    
     if (people < 1) {
       setFormError({ ...formError, people: true });
       notify({

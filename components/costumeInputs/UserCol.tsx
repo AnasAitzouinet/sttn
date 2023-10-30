@@ -20,16 +20,14 @@ import { Separator } from "@radix-ui/react-dropdown-menu";
 
 export type Data = {
   id: number;
-  title: string;
-  img: string;
-  price: number;
-  description: string;
-  city: string;
+  name: string;
+  phone_number: string;
+  email: string;
+  role: string;
 };
 
 import React, { useState } from "react";
 import { DialogClose } from "@radix-ui/react-dialog";
-import Upload from "./Upload";
 interface Props {
   row: {
     original: Data;
@@ -39,16 +37,15 @@ interface Props {
 function TripsCol({ row, Close }: Props) {
   const [form, setForm] = useState<Data>({
     id: row.original.id,
-    title: row.original.title,
-    img: row.original.img,
-    price: row.original.price,
-    description: row.original.description,
-    city: row.original.city,
+    name: row.original.name,
+    phone_number: row.original.phone_number,
+    email: row.original.email,
+    role: row.original.role,
   });
   const handelEdit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const res = await fetch(
-      `https://gestionres-production.up.railway.app/Trips/${form.id}`,
+      `https://gestionres-production.up.railway.app/api/users/${form.id}`,
       {
         method: "PUT",
         headers: {
@@ -64,49 +61,49 @@ function TripsCol({ row, Close }: Props) {
   return (
     <form className="flex flex-col gap-2 text-gray-400" onSubmit={handelEdit}>
       <div className="flex flex-col items-start  gap-2">
-        <h3>Title</h3>
+        <h3>Name</h3>
         <Input
           placeholder="Title"
           type="text"
           onChange={(e) => {
-            setForm({ ...form, title: e.target.value });
+            setForm({ ...form, name: e.target.value });
           }}
           className="text-gray-100"
-          value={form.title}
+          value={form.name}
         />
       </div>
       <div className="flex flex-col items-start  gap-2">
-        <h3>Price</h3>
+        <h3>Email</h3>
         <Input
           placeholder={`Price `}
           type="text"
           onChange={(e) => {
-            setForm({ ...form, price: parseInt(e.target.value) });
+            setForm({ ...form, email: (e.target.value) });
           }}
-          value={form.price.toString()}
+          value={form.email.toString()}
           className="text-gray-100"
         />
       </div>
       <div className="flex flex-col items-start  gap-2">
-        <h3>City</h3>
+        <h3>Phone Number</h3>
         <Input
           placeholder="City"
           type="text"
           onChange={(e) => {
-            setForm({ ...form, city: e.target.value });
+            setForm({ ...form, phone_number: e.target.value });
           }}
-          value={form.city}
+          value={form.phone_number}
           className="text-gray-100"
         />
       </div>
       <div className="flex flex-col items-start  gap-2">
-        <h3>Description</h3>
+        <h3>Role</h3>
         <textarea
           placeholder="Description"
           onChange={(e) => {
-            setForm({ ...form, description: e.target.value });
+            setForm({ ...form, role: e.target.value });
           }}
-          value={form.description}
+          value={form.role}
           className="text-gray-100 bg-transparent rounded-xl w-full h-20"
         />
       </div>
@@ -122,81 +119,10 @@ function TripsCol({ row, Close }: Props) {
   );
 }
 
-const UpdateImage = ({ row }: Props) => {
-  const [image, setImage] = useState<File>();
-  const [urls, setUrl] = useState<string>(row.original.img);
-  const [imgUrl, setImgUrl] = useState<string>("");
-  const handelImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setImage(e.target.files[0]);
-    }
-  };
-  const uploadImage = async () => {
-    if (!image) {
-      console.error("No image to upload");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", image);
-    formData.append("upload_preset", "my_upload_preset"); // replace with your upload preset
-
-    const response = await fetch(
-      "https://api.cloudinary.com/v1_1/df2j87kme/image/upload",
-      {
-        // replace with your cloud name
-        method: "POST",
-        body: formData,
-      }
-    );
-
-    if (response.ok) {
-      const jsonResponse = await response.json();
-      console.log(jsonResponse);
-      return jsonResponse.url;
-    } else {
-      console.error("Upload failed");
-    }
-  };
-
-  const handelSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const image = await uploadImage()
-    if (!image) return;
-    setImgUrl(image);
-    const res = await fetch(
-      `https://gestionres-production.up.railway.app/Trips/${row.original.id}`,
-      {
-        method: "PUT",
-        headers:{
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...row.original,
-          img: image,
-        }),
-      }
-    );
-    if (res.ok) {
-      console.log("updated");
-    }else{
-      console.log(res);
-    }
-  };
-  return (
-    <form onSubmit={handelSubmit} className="flex gap-2 items-center">
-      <Upload onChange={handelImage} />
-      <img src={urls} alt="" className="w-20 h-20" />
-      <button type="submit" className="bg-blue-700 text-white px-5 py-2 rounded-xl">
-        Update
-      </button>
-    </form>
-  );
-};
 
 const DeleteTrip = async (id: number) => {
   const res = await fetch(
-    `https://gestionres-production.up.railway.app/Trips/${id}`,
+    `https://gestionres-production.up.railway.app/api/users/${id}`,
     {
       method: "DELETE",
       headers: {
@@ -216,36 +142,20 @@ export const columns: ColumnDef<Data>[] = [
     header: "Id",
   },
   {
-    accessorKey: "title",
-    header: "Title",
+    accessorKey: "name",
+    header: "Name",
   },
   {
-    accessorKey: "price",
-    header: "price",
+    accessorKey: "phone_number",
+    header: "Phone Number",
   },
   {
-    accessorKey: "description",
-    header: "description",
+    accessorKey: "email",
+    header: "Email",
   },
   {
-    accessorKey: "city",
-    header: "city",
-  },
-  {
-    accessorKey: "img",
-    header: "Image",
-    cell: ({ row }) => {
-      const trip = row.original;
-      return (
-        <div className="flex justify-center items-center">
-          <img
-            src={trip.img}
-            alt={trip.title}
-            className="w-20 h-20 rounded-xl "
-          />
-        </div>
-      );
-    },
+    accessorKey: "role",
+    header: "Role",
   },
   {
     header: "Actions",
@@ -285,42 +195,6 @@ export const columns: ColumnDef<Data>[] = [
     },
   },
   {
-    accessorKey: "Update",
-    header: "Update",
-    cell: ({ row }) => {
-      return (
-        <Dialog>
-          <DialogTrigger>
-            <Button className="h-8 w-8 p-2 bg-transparent text-black">
-              <span className="">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6 hover:bg-transparent"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
-                  />
-                </svg>
-              </span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Info</DialogTitle>
-              <UpdateImage row={row} Close={DialogClose} />
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
-      );
-    },
-  },
-  {
     accessorKey: "delete",
     header: "Delete",
     cell: ({ row }) => {
@@ -347,11 +221,11 @@ export const columns: ColumnDef<Data>[] = [
               <DialogTitle>Are you sure ? </DialogTitle>
             </DialogHeader>
             <div className="flex flex-col text-gray-400">
-              <p>you will delete this reservation </p>
+              <p>you will delete this user </p>
               <div className="flex justify-end">
                 <DialogClose>
                   <button
-                    onClick={() => DeleteTrip(row.original.id)}
+                    onClick={ () => DeleteTrip(row.original.id) }
                     className="bg-red-700 px-5 py-2 text-white rounded-xl hover:bg-red-600"
                   >
                     Delete
