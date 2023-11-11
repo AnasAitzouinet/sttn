@@ -9,7 +9,8 @@ import { useRouter } from "next/navigation";
 import { Poppins } from "next/font/google";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
+import { DropdownMenuProfile } from "@/components/costumeInputs/CostumeDropdownMenu";
+import { UserCircle ,MapPin, Map } from "lucide-react";
 const Gabrielaa = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -51,69 +52,66 @@ export default function LayoutProfile({ children }: LayoutProfileProps) {
   }, [auth]);
   return (
     <main
-      className={`w-screen h-screen bg-cover bg-no-repeat bg-center  overflow-hidden  ${Gabrielaa.className} `}
-      style={{
-        backgroundImage: "url('/profile.jpg')",
-      }}
+      className={`w-full h-full bg-sky-300/40 backdrop-blur-xl  text-gray-700 relative flex flex-col justify-center items-center ${Gabrielaa.className} lg:flex-row lg:items-start`}
     >
-      <nav
-        className="w-screen flex flex-row items-center 
-      backdrop-blur-2xl 
-      justify-around gap-1  py-2 text-white font-extralight"
-      >
-        <ul className="text-white flex items-center gap-5 font-extralight">
-          <NavLink name="Home" paths="/" />
-          <NavLink name="Destinations" paths="/Destinations" />
-          <NavLink name="Who we are ?" paths="/Who-we-are" />
-          <NavLink name="Contact us" paths="Contact-us" />
-        </ul>
-        <div className="flex gap-3 justify-center items-center">
-          <Avatar
-            onClick={() => router.push("/Profile")}
-            className="cursor-pointer"
-          >
+      <aside className="w-full h-full py-2 flex justify-around items-center gap-5 flex-row-reverse xl:hidden ">
+        <div className="opacity-0">test</div>
+        <h1 className="font-bold text-xl ">Reservations</h1>
+        <DropdownMenuProfile username={user.name}>
+          <Avatar className="cursor-pointer w-14 h-14">
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback className="capitalize">
-              {user.name
-                .split(" ")
-                .map((name: string) => name[0])
-                .join("")}
+              {
+                //@ts-ignore
+                user.name
+                  .split(" ")
+                  .map((name: any) => name[0])
+                  .join("")
+              }
             </AvatarFallback>
           </Avatar>
+        </DropdownMenuProfile>
+      </aside>
+
+      <aside className="hidden lg:w-[40%] lg:h-[100vh] lg:flex-col lg:flex bg-sky-400/40 backdrop-blur-xl justify-center py-3 items-center">
+        <Avatar className="cursor-pointer w-24 h-24">
+          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarFallback className="capitalize">
+            {
+              //@ts-ignore
+              user.name
+                .split(" ")
+                .map((name: any) => name[0])
+                .join("")
+            }
+          </AvatarFallback>
+        </Avatar>
+        <h1 className="font-bold py-1">Anas Ait Zouinet</h1>
+        <div className="flex flex-col justify-start py-5 items-center gap-5 w-full h-full">
+          <SideItems onClick={() => console.log("1")} Icon={UserCircle} title="Profile"/>
+          <SideItems onClick={() => console.log("1")} Icon={MapPin} title="My Trips"/>
+          <SideItems onClick={() => console.log("1")} Icon={Map} title="My Activities"/>
         </div>
-      </nav>
-      <motion.aside
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        className="h-1/3
-      w-full flex flex-col justify-center items-center px-5 leading-[4rem]"
-      >
-        <nav className="text-[4rem] font-medium capitalize">
-          Welcome {user.name},
-        </nav>
-        <div className="leading-7 flex flex-col text-center text-zinc-200">
-          <span className="text-[1.3rem]  px-2 font-medium capitalize">
-            Email: {user.email}
-          </span>
-          <span className="text-[1.3rem]  px-2 font-medium capitalize">
-            Phone: {user.phone_number}
-          </span>
-        </div>
-      </motion.aside>
-      <section className=" h-2/3 p-5">
-      <Tabs defaultValue="account" className="w-full h-full border rounded-xl border-gray-400/40 p-2 bg-transparent backdrop-blur-xl  ">
-        <TabsList className="w-full bg-transparent text-white">
-          <TabsTrigger value="account" className="w-full rounded-full data-[state=active]:bg-black/70 data-[state=active]:backdrop-blur-2xl">Reservation Trips</TabsTrigger>
-          <TabsTrigger value="passwords"  className="w-full rounded-full data-[state=active]:bg-black/70 data-[state=active]:backdrop-blur-2xl ">Reservation Password</TabsTrigger>
-          <TabsTrigger value="password"  className="w-full rounded-full data-[state=active]:bg-black/70 data-[state=active]:backdrop-blur-2xl">Password</TabsTrigger>
-        </TabsList>
-        <TabsContent value="account" className="border">
-          Make changes to your account here.
-        </TabsContent>
-        <TabsContent value="password">Change your password here.</TabsContent>
-      </Tabs>
-      </section>
+      </aside>
+      <section className="w-full h-full">{children}</section>
     </main>
   );
 }
+
+interface SideItemsProps {
+  Icon: React.ElementType;
+  title: string;
+  onClick: () => void;
+}
+const SideItems = ({Icon,title,onClick}:SideItemsProps) => {
+  return (
+    <div
+    onClick={onClick}
+    className="w-[90%] h-[10%] bg-sky-200 border-1 border-gray-200
+    hover:bg-sky-100 duration-500 transition-all ease-in-out
+    cursor-pointer border rounded-xl flex justify-center items-center font-bold gap-1">
+      {Icon && <Icon />}
+      <span className="text-gray-700">{title}</span>
+    </div>
+  );
+};
