@@ -78,8 +78,7 @@ const SignIn = () => {
               
             },
           })
-          // router.refresh();
-          window.location.reload();
+          router.push('/Profile');
           console.log(await res.json());
           return;
         } else {
