@@ -154,13 +154,14 @@ const Reserverations = ({
     const dateFromObj = new Date(dateFrom);
     const dateToObj = new Date(dateTo);
     const now = new Date();
-    const SevenDays = new Date(now.setDate(now.getDate() + 7));
+    const SevenDays = new Date();
+    SevenDays.setDate(now.getDate() + 7);
     if (dateFromObj < now || dateToObj < now) {
       setFormError({ ...formError, dateFrom: true });
       notify({ message: "Dates can't be before today", status: "error" });
       return false;
     }
-
+    
     if (dateFromObj >= dateToObj) {
       setFormError({ ...formError, dateFrom: true });
       notify({
@@ -177,6 +178,7 @@ const Reserverations = ({
       });
       return false;
     }
+    
 
     if (people < 1) {
       setFormError({ ...formError, people: true });
