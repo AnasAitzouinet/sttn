@@ -5,6 +5,8 @@ import "keen-slider/keen-slider.min.css";
 import { IoLocationOutline } from "react-icons/io5";
 import res from "@/components/Reservations/Reserverations";
 import SkeletonSlider from "@/components/SkeletonSlider";
+import { Info } from "lucide-react";
+
 // const trips = [
 //   {
 //     id: 1,
@@ -173,6 +175,8 @@ const Tours = () => {
                 <h2 className="text-white text-sm sm:text-xl font-semibold text-center">
                   {trip.title}
                 </h2>
+        <Info />
+
                 <div
                   className="text-gray-300 text-xs sm:text-sm
             flex justify-center items-center gap-1

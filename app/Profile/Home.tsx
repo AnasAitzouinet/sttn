@@ -23,6 +23,7 @@ type TripData = {
   phone: string;
   details: string;
   statue: "ACCEPTED" | "PENDING" | "NOT_ACCEPTED";
+  created_at: string;
   userSttn: {
     id: number;
     name: string;
@@ -85,7 +86,7 @@ export default function Profile({ id, Type }: ProfileProps) {
               img={reservation.trip.img}
               title={reservation.trip.title}
               type={type}
-              // date={reservation.date}
+              date={reservation.created_at}
               status={reservation.statue}
               details={reservation.details}
             />

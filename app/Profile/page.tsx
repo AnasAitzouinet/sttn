@@ -27,7 +27,7 @@ type Form = {
   email: string;
   role: string;
 };
-export default function LayoutProfile({ children }: LayoutProfileProps) {
+export default function HomeProfile() {
   const router = useRouter();
   const [auth, setAuth] = useState<string | false | JwtPayload>(false);
   const [type, setType] = useState<string>("" as string);
@@ -57,7 +57,12 @@ export default function LayoutProfile({ children }: LayoutProfileProps) {
   }, [auth]);
   return (
     <main
-      className={`w-full h-full lg:w-screen lg:h-screen lg:overflow-y-hidden bg-sky-300/40 backdrop-blur-xl  text-gray-700 relative flex flex-col justify-center items-center ${Gabrielaa.className} lg:flex-row lg:items-start`}
+    style={{
+      backgroundImage: "url('/2.jpg')",
+      backgroundSize: "cover",
+      backgroundAttachment: "fixed",
+    }}
+      className={`w-full h-full lg:w-screen lg:h-screen lg:overflow-y-hidden bg-black text-gray-700 relative flex flex-col justify-center items-center ${Gabrielaa.className} lg:flex-row lg:items-start`}
     >
       <aside className="w-full h-full py-2 flex justify-around items-center gap-5 flex-row-reverse xl:hidden ">
         <div className="opacity-0">test</div>
@@ -78,7 +83,8 @@ export default function LayoutProfile({ children }: LayoutProfileProps) {
         </DropdownMenuProfile>
       </aside>
 
-      <aside className="hidden lg:absolute  left-0 lg:w-[25%] lg:h-screen lg:flex-col lg:flex bg-sky-400/40 backdrop-blur-xl justify-center py-3 items-center">
+      <aside className="hidden
+      lg:absolute  left-0 lg:w-[25%] lg:h-screen lg:flex-col lg:flex bg-gray-400/20 backdrop-blur-md justify-center py-3 items-center">
         <Avatar className="cursor-pointer w-24 h-24">
           <AvatarImage src="https://github.com/shadcn.png" />
           <AvatarFallback className="capitalize">
@@ -91,7 +97,9 @@ export default function LayoutProfile({ children }: LayoutProfileProps) {
             }
           </AvatarFallback>
         </Avatar>
-        <h1 className="font-bold py-1 capitalize">{user.name}</h1>
+        <h1 className="font-bold py-1 capitalize 
+      text-[#DDF2FD]
+      ">{user.name}</h1>
         <div className="flex flex-col justify-start py-5 items-center gap-5 w-full h-full">
           <SideItems
             onClick={() => console.log("1")}
@@ -126,12 +134,12 @@ const SideItems = ({ Icon, title, onClick }: SideItemsProps) => {
   return (
     <div
       onClick={onClick}
-      className="w-[90%] h-[10%] bg-sky-200 border-1 border-gray-200
-    hover:bg-sky-100 duration-500 transition-all ease-in-out
-    cursor-pointer border rounded-xl flex justify-center items-center font-bold gap-1"
+      className="w-[90%] h-[10%] text-white bg-gray-300/20 backdrop-blur-xl  border-1 border-gray-200/40
+    hover:bg-gray-300/50 duration-500 transition-all ease-in-out
+    cursor-pointer border rounded-xl flex justify-center items-center font- gap-1"
     >
       {Icon && <Icon />}
-      <span className="text-gray-700">{title}</span>
+      <span className="text-gray-100">{title}</span>
     </div>
   );
 };
