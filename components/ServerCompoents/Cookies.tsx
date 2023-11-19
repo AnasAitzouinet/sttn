@@ -24,7 +24,7 @@ const Cookies = (CookiesProps: CookiesProps) => {
       maxAge: CookiesProps.options.maxAge,
       path: CookiesProps.options.path,
       secure: process.env.NODE_ENV === 'production' ? true : false,
-      sameSite:'none'
+      sameSite:'strict'
     });
     console.log('cookie set')
   }catch(err){
