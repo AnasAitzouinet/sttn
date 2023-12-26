@@ -12,9 +12,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Auth from "@/components/Auth/Auth";
+import { AiOutlineClose } from "react-icons/ai";
+import { motion, useInView } from "framer-motion";
 
 const Destinations = () => {
   const [auth, setAuth] = useState<string | false | JwtPayload>(false);
+  const [search, setSearch] = useState<string>("");
+  const [open, setOpen] = useState(false);
+
   const router = useRouter();
   useEffect(() => {
     const checkAuth = async () => {
@@ -26,11 +31,11 @@ const Destinations = () => {
   }, []);
   return (
     <main
-      className="h-full w-screen bg-cover bg-center bg-no-repeat  "
+      className="h-full w-screen bg-cover relative bg-center bg-no-repeat "
       style={{
         backgroundImage: "url('/pe.jpg')",
         backgroundAttachment: "fixed", // Add this line
-        backgroundSize: "cover",
+        backgroundSize: "fit",
       }}
     >
       <div
@@ -40,18 +45,89 @@ const Destinations = () => {
             "linear-gradient(180deg, rgb(8, 8, 8) 4%, transparent 70%)",
         }}
       >
-        <nav className="w-screen flex flex-row items-center justify-around gap-1  py-2 text-white font-extralight">
-          <ul className="text-white flex items-center gap-5 font-extralight">
-            <NavLink name="Home" paths="/" />
-            <NavLink name="Destinations" paths="/Destinations" />
-            <NavLink name="Who we are ?" paths="/Who-we-are" />
-            <NavLink name="Contact us" paths="Contact-us" />
-            
-          </ul>
-          <div className="flex gap-3 justify-center items-center">
+         <nav className=" w-full flex justify-between items-center px-7 z-50">
+          <h1 className="py-3  text-center text-white font-bold text-3xl">
+            STTN
+          </h1>
+          <div className="text-white lg:hidden" onClick={() => setOpen(!open)}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-8 h-8"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+              />
+            </svg>
+          </div>
+          <motion.div
+            initial={{ x: open ? "100%" : 0 }}
+            animate={{ x: open ? 0 : "100%" }}
+            transition={{ duration: 0.2 }}
+            className={`h-full w-2/3 fixed top-0 right-0 z-20 bg-gray-300 opacity-0
+            transition-colors  ease-in-out flex flex-col items-center justify-start gap-16 
+            ${
+              open ? "shadow-[-30px_14px_100px_1px_#a0aec0] opacity-100 " : ""
+            } `}
+          >
+            <button
+              onClick={() => setOpen(!open)}
+              className="text-left w-full px-2 py-3"
+            >
+              <AiOutlineClose />
+            </button>
+            <div>
+              <ul className="text-gray-700 flex flex-col items-center gap-3 font-extralight w-full">
+                <li>
+                  <a
+                    href="/"
+                    className="flex gap-2 items-center justify-center "
+                  >
+                    Home
+                  </a>
+                </li>
 
-          <SearchBar />
-          {auth ? (
+                <li>
+                  <a href="/Who-we-are">Who we are ?</a>
+                </li>
+                <li>
+                  <a href="/Destinations">Destinations</a>
+                </li>
+                <li>
+                  <a href="/Contact-us">Contact us</a>
+                </li>
+                <div className="border w-3/4 border-gray-900"></div>
+                <Auth>
+                <li>
+                  Sign up
+                </li>
+                </Auth>
+              </ul>
+            </div>
+          </motion.div>
+          <motion.div
+            onClick={() => setOpen(!open)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: open ? 1 : 0 }}
+            transition={{ duration: 0.7 }}
+            className={
+              open
+                ? "h-full w-full fixed top-0 left-0 z-10 bg-transparent backdrop-blur-sm shadow-lg "
+                : "hidden"
+            }
+          ></motion.div>
+          <div className="hidden lg:flex">
+            <ul className="text-white flex items-center gap-5 font-extralight">
+              <NavLink name="Home" paths="/" />
+              <NavLink name="Destinations" paths="/Destinations" />
+              <NavLink name="Who we are ?" paths="/Who-we-are" />
+              <NavLink name="Contact us" paths="Contact-us" />
+              {auth ? (
                 <Avatar
                   onClick={() => router.push("/Profile")}
                   className="cursor-pointer"
@@ -67,8 +143,41 @@ const Destinations = () => {
                   <NavLink name="Sign up"/>
                 </Auth>
               )}
+            </ul>
           </div>
         </nav>
+        {/* <nav className="w-screen flex flex-row items-center justify-around gap-1  py-2 text-white font-extralight">
+          <ul className="text-white flex items-center gap-5 font-extralight">
+            <NavLink name="Home" paths="/" />
+            <NavLink name="Destinations" paths="/Destinations" />
+            <NavLink name="Who we are ?" paths="/Who-we-are" />
+            <NavLink name="Contact us" paths="Contact-us" />
+          </ul>
+          <div className="flex gap-3 justify-center items-center list-none">
+            <SearchBar onChange={(e) => setSearch(e.target.value)} />
+            {auth ? (
+              <Avatar
+                onClick={() => router.push("/Profile")}
+                className="cursor-pointer"
+              >
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback className="capitalize">
+                  {
+                    //@ts-ignore
+                    auth.name
+                      .split(" ")
+                      .map((name: string) => name[0])
+                      .join("")
+                  }
+                </AvatarFallback>
+              </Avatar>
+            ) : (
+              <Auth>
+                <NavLink name="Sign up" />
+              </Auth>
+            )}
+          </div>
+        </nav> */}
         <section
           className="
         px-5 py-5  gap-2 flex flex-col 
@@ -81,8 +190,7 @@ const Destinations = () => {
           >
             Trips :
           </h1>
-          
-          <Tours />
+          <Tours filter={search} />
         </section>
         <section
           className="

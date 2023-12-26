@@ -96,11 +96,6 @@ export default function Home() {
           <h1 className="py-3  text-center text-white font-bold text-3xl">
             STTN
           </h1>
-          {/* <div className="bg-gray-100 p-1 m-3 flex justify-center items-center backdrop-blur-lg rounded-full">
-            <img src="/rotate.png" alt="" 
-            className="w-20 h-20 object-fit"
-            />
-          </div> */}
           <div className="text-white lg:hidden" onClick={() => setOpen(!open)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -254,9 +249,9 @@ export default function Home() {
             {trips.map((trip) => (
               <div
                 key={trip.id}
-                className=" relative
+                className=" relative sm:h-[30vh] sm:w-[47vh]
                 hover:scale-105 duration-500 transition-all ease-in-out
-                h-[30vh] w-[47vh] cursor-pointer rounded-xl overflow-hidden border border-gray-400/60 "
+                h-[30vh] w-[35vh] cursor-pointer rounded-xl overflow-hidden border border-gray-400/60 "
               >
                 <img
                   src={trip.img}

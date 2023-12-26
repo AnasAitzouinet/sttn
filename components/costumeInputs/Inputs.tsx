@@ -1,7 +1,8 @@
 "use client";
 import { motion, useSpring, animate } from "framer-motion";
 import { useState } from "react";
-import { twMerge } from "tailwind-merge";
+// @ts-ignore
+import { twMerge } from "tailwind-merge"
 interface InputProps {
   placeholder: string;
   type: string;
@@ -10,7 +11,7 @@ interface InputProps {
   value?: string;
 }
 const Input = (Props: InputProps) => {
-  const [isFocus, setIsFocus] = useState(false);
+  const [isFocus, setIsFocus] = useState(false);  
 
   return (
     <motion.input
@@ -29,4 +30,9 @@ const Input = (Props: InputProps) => {
     />
   );
 };
+
+
+
+
+
 export default Input;

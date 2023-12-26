@@ -6,11 +6,12 @@ import { IoLocationOutline } from "react-icons/io5";
 import res from "@/components/Reservations/Reserverations";
 import { set } from "date-fns";
 import SkeletonSlider from "@/components/SkeletonSlider";
+import ImagePrev from "@/components/costumeInputs/ImagePrev";
 
 interface Trip {
   id: number;
   title: string;
-  img: string;
+  pictures: string[];
   price: number;
   description: string;
   place: string;
@@ -70,7 +71,7 @@ const Activites = () => {
         ""
       ) : (
         <div
-          className="absolute top-0 right-0 w-[3%]  self-end h-full z-20 rounded-lg "
+          className="absolute top-0 right-0 w-[3%]  self-end h-full z-10 rounded-lg "
           style={{
             background:
               "linear-gradient(-90deg, rgb(8, 8, 8) 0%, transparent 100%)",
@@ -81,17 +82,26 @@ const Activites = () => {
         <SkeletonSlider />
       ) : (
         activity.map((trip) => (
-          <res.ReserverationsActi key={trip.id} id={trip.id} title={trip.title}>
+          <ImagePrev
+          type = "activity"
+            key={trip.id}
+            id={trip.id}
+            title={trip.title}
+            description={trip.description}
+            price={trip.price}
+            place={trip.place}
+            images={trip.pictures}
+          >
             <div
               className="keen-slider__slide h- relative cursor-pointer overflow-hidden rounded-xl  border border-gray-300/40 "
               onMouseEnter={() => setHovered(trip.id)}
               onMouseLeave={() => setHovered(null)} // Reset to null on mouse leave
             >
               <img
-                src={trip.img}
+                src={trip.pictures[0]}
                 alt={trip.title}
                 onLoad={() => setImagesLoaded(true)}
-                className={`object-cover h-[17rem] w-full duration-500 transition-all ease-in-out
+                className={`object-cover h-[10rem] sm:h-[17rem]  w-full duration-500 transition-all ease-in-out
                     ${
                       hovered === trip.id
                         ? "scale-125 duration-500 transition-all "
@@ -122,7 +132,8 @@ const Activites = () => {
                 </div>
               </div>
             </div>
-          </res.ReserverationsActi>
+          </ImagePrev>
+          
         ))
       )}
     </div>

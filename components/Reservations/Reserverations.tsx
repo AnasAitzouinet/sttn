@@ -42,16 +42,17 @@ type Form = {
   description: string;
   language: string;
   people: number;
+  type: string;
   userId: number;
 };
 type FormTrip = {
   email: string | any;
   phone: string;
   FullName: string;
-  dateFrom: string | null;
-  dateTo: string | null;
+  datefrom: string | null;
   description: string;
   language: string;
+  type: string;
   people: number;
   userId: number;
 };
@@ -67,10 +68,10 @@ const Reserverations = ({
     email: "",
     phone: "",
     FullName: "",
-    dateFrom: null,
-    dateTo: null,
+    datefrom: null,
     description: "",
     language: "",
+    type: "",
     people: 0,
     userId: 0,
   });
@@ -78,13 +79,15 @@ const Reserverations = ({
     email: false,
     phone: false,
     FullName: false,
-    dateFrom: false,
-    dateTo: false,
+    datefrom: false,
     description: false,
     people: false,
   });
   const [loading, setLoading] = useState(false); // Added state
   const [LoggedIn, setLoggedIn] = useState(false);
+
+  const [type, setType] = useState("shuttle"); // Added state
+
   useEffect(() => {
     const Auth = async () => {
       const res = await CheckAuth();
@@ -108,16 +111,8 @@ const Reserverations = ({
 
   const handleError = () => {
     const EmailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
-    const {
-      FullName,
-      email,
-      phone,
-      description,
-      dateFrom,
-      dateTo,
-      people,
-      language,
-    } = form;
+    const { FullName, email, phone, description, datefrom, people, language } =
+      form;
 
     if (
       !(
@@ -126,8 +121,7 @@ const Reserverations = ({
         phone &&
         phone.length >= 10 &&
         description &&
-        dateFrom &&
-        dateTo &&
+        datefrom &&
         people &&
         language
       )
@@ -137,8 +131,7 @@ const Reserverations = ({
         phone: !phone,
         FullName: !FullName,
         description: !description,
-        dateFrom: !dateFrom,
-        dateTo: !dateTo,
+        datefrom: !datefrom,
         people: !people,
       });
       notify({ message: "Please fill all the fields", status: "error" });
@@ -151,34 +144,24 @@ const Reserverations = ({
       return false;
     }
 
-    const dateFromObj = new Date(dateFrom);
-    const dateToObj = new Date(dateTo);
+    const dateObj = new Date(datefrom);
     const now = new Date();
     const SevenDays = new Date();
     SevenDays.setDate(now.getDate() + 7);
-    if (dateFromObj < now || dateToObj < now) {
-      setFormError({ ...formError, dateFrom: true });
+    if (dateObj < now) {
+      setFormError({ ...formError, datefrom: true });
       notify({ message: "Dates can't be before today", status: "error" });
       return false;
     }
-    
-    if (dateFromObj >= dateToObj) {
-      setFormError({ ...formError, dateFrom: true });
-      notify({
-        message: "Date from can't be the same as or after date to",
-        status: "error",
-      });
-      return false;
-    }
-    if(dateFromObj < SevenDays){
-      setFormError({ ...formError, dateFrom: true });
+
+    if (dateObj < SevenDays) {
+      setFormError({ ...formError, datefrom: true });
       notify({
         message: "Date from can't be less than 7 days from now",
         status: "error",
       });
       return false;
     }
-    
 
     if (people < 1) {
       setFormError({ ...formError, people: true });
@@ -194,10 +177,10 @@ const Reserverations = ({
       phone,
       numberOfPersons: people,
       language,
+      type,
       trip: { id },
       details: description,
-      dateFrom,
-      dateTo,
+      dateFrom: datefrom,
       userSttn: { id: form.userId },
     };
 
@@ -283,6 +266,35 @@ const Reserverations = ({
               onSubmit={handleSubmit}
               className="grid grid-rows-1 gap-2 w-full "
             >
+              <h2>
+                Select type <span className="text-red-500">*</span> :
+              </h2>
+              <div className="flex gap-2">
+                <div
+                  onClick={() => setType("shuttle")}
+                  className={`px-2 py-1 border  rounded-xl cursor-pointer transition-all duration-300 ease-in-out
+                ${
+                  type === "shuttle"
+                    ? "border-blue-700 text-blue-500"
+                    : "border-gray-300/20"
+                }
+                `}
+                >
+                  shuttle
+                </div>
+                <div
+                  onClick={() => setType("private")}
+                  className={`px-2 py-1 border  rounded-xl cursor-pointer transition-all duration-300 ease-in-out
+                ${
+                  type === "private"
+                    ? "border-blue-700 text-blue-500 "
+                    : "border-gray-300/20"
+                }
+                `}
+                >
+                  Private
+                </div>
+              </div>
               {loading ? (
                 <div className=" h-full flex flex-col justify-center items-center">
                   <Loader
@@ -317,7 +329,10 @@ const Reserverations = ({
                       className="text-white"
                       value={form.phone}
                       onChange={(e) =>
-                        setForm({ ...form, phone: e.target.value })
+                        setForm({
+                          ...form,
+                          phone: e.target.value,
+                        })
                       }
                     />
                   </aside>
@@ -331,20 +346,7 @@ const Reserverations = ({
                         <input
                           type="date"
                           onChange={(e) =>
-                            setForm({ ...form, dateFrom: e.target.value })
-                          }
-                          className="w-full border border-gray-300/40 rounded-xl p-2 bg-transparent"
-                        />
-                      </label>
-                      <label
-                        htmlFor=""
-                        className="flex w-full justify-center items-center gap-2"
-                      >
-                        to:
-                        <input
-                          type="date"
-                          onChange={(e) =>
-                            setForm({ ...form, dateTo: e.target.value })
+                            setForm({ ...form, datefrom: e.target.value })
                           }
                           className="w-full border border-gray-300/40 rounded-xl p-2 bg-transparent"
                         />
@@ -364,6 +366,7 @@ const Reserverations = ({
                       </Select>
                       <input
                         type="number"
+                        value={form.people <= 0 ? "" : form.people}
                         onChange={(e) =>
                           setForm({ ...form, people: parseInt(e.target.value) })
                         }
@@ -376,8 +379,8 @@ const Reserverations = ({
                     onChange={(e) =>
                       setForm({ ...form, description: e.target.value })
                     }
-                    cols={5}
-                    rows={5}
+                    cols={4}
+                    rows={3}
                     placeholder="Message"
                     className="w-full border border-gray-300/40 rounded-xl p-2 bg-transparent
               
@@ -416,6 +419,7 @@ const ReserverationsActi = ({
     date: null,
     description: "",
     language: "",
+    type: "",
     people: 0,
     userId: 0,
   });
@@ -429,6 +433,8 @@ const ReserverationsActi = ({
   });
   const [loading, setLoading] = useState(false); // Added state
   const [LoggedIn, setLoggedIn] = useState(false);
+  const [type, setType] = useState("shuttle"); // Added state
+
   useEffect(() => {
     const Auth = async () => {
       const res = await CheckAuth();
@@ -497,10 +503,13 @@ const ReserverationsActi = ({
 
     if (dateObj < TwoDAYS) {
       setFormError({ ...formError, date: true });
-      notify({ message: "Date can't be less than 2 days from now", status: "error" });
+      notify({
+        message: "Date can't be less than 2 days from now",
+        status: "error",
+      });
       return false;
     }
-    
+
     if (people < 1) {
       setFormError({ ...formError, people: true });
       notify({
@@ -514,6 +523,7 @@ const ReserverationsActi = ({
       email,
       phone,
       nbrPerson: people,
+      type,
       language,
       activity: { id },
       details: description,
@@ -603,6 +613,35 @@ const ReserverationsActi = ({
               onSubmit={handleSubmit}
               className="grid grid-rows-1 gap-2 w-full "
             >
+              <h2>
+                Select type <span className="text-red-500">*</span> :
+              </h2>
+              <div className="flex gap-2">
+                <div
+                  onClick={() => setType("shuttle")}
+                  className={`px-2 py-1 border  rounded-xl cursor-pointer transition-all duration-300 ease-in-out
+                ${
+                  type === "shuttle"
+                    ? "border-blue-700 text-blue-500"
+                    : "border-gray-300/20"
+                }
+                `}
+                >
+                  shuttle
+                </div>
+                <div
+                  onClick={() => setType("private")}
+                  className={`px-2 py-1 border  rounded-xl cursor-pointer transition-all duration-300 ease-in-out
+                ${
+                  type === "private"
+                    ? "border-blue-700 text-blue-500"
+                    : "border-gray-300/20"
+                }
+                `}
+                >
+                  Private
+                </div>
+              </div>
               {loading ? (
                 <div className=" h-full flex flex-col justify-center items-center">
                   <Loader
@@ -647,6 +686,7 @@ const ReserverationsActi = ({
                         htmlFor=""
                         className="flex w-full justify-center items-center gap-2"
                       >
+                        From:
                         <input
                           type="date"
                           onChange={(e) =>
@@ -670,6 +710,7 @@ const ReserverationsActi = ({
                       </Select>
                       <input
                         type="number"
+                        value={form.people <= 0 ? "" : form.people}
                         onChange={(e) =>
                           setForm({ ...form, people: parseInt(e.target.value) })
                         }
@@ -683,7 +724,7 @@ const ReserverationsActi = ({
                       setForm({ ...form, description: e.target.value })
                     }
                     cols={5}
-                    rows={5}
+                    rows={3}
                     placeholder="Message"
                     className="w-full border border-gray-300/40 rounded-xl p-2 bg-transparent
               
@@ -985,7 +1026,7 @@ const ReserverationsActi = ({
 //                     rows={5}
 //                     placeholder="Message"
 //                     className="w-full border border-gray-300/40 rounded-xl p-2 bg-transparent
-              
+
 //               "
 //                   />
 //                   <button

@@ -22,6 +22,7 @@ async function getData(): Promise<Data[]> {
 }
 const Activities = () => {
   const [data, setData] = React.useState<Data[]>([]);
+  console.log(data);
   const statue = data.map((item) => item.statue);
   useEffect(() => {
     getData().then((data) => {

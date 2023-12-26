@@ -67,7 +67,7 @@ export default function Profile({ id, Type }: ProfileProps) {
       setLoading(false);
     };
     fetchReservations();
-  }, [id, type, Type]);
+  });
   return (
     <section className="w-full h-full text-gray-700">
       <div className="border lg:border-none"></div>

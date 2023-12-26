@@ -16,11 +16,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Input from "./Inputs";
+import { Input as Inputs } from "../ui/input";
 
 export type Data = {
   id: number;
   title: string;
-  img: string;
+  pictures: string[];
   price: number;
   description: string;
   place: string;
@@ -39,7 +40,7 @@ function TripsCol({ row, Close }: Props) {
   const [form, setForm] = useState<Data>({
     id: row.original.id,
     title: row.original.title,
-    img: row.original.img,
+    pictures: row.original.pictures,
     price: row.original.price,
     description: row.original.description,
     place: row.original.place,
@@ -123,7 +124,7 @@ function TripsCol({ row, Close }: Props) {
 
 const UpdateImage = ({ row }: Props) => {
   const [image, setImage] = useState<File>();
-  const [urls, setUrl] = useState<string>(row.original.img);
+  const [urls, setUrl] = useState<string[]>(row.original.pictures);
   const [imgUrl, setImgUrl] = useState<string>("");
   const handelImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -183,12 +184,35 @@ const UpdateImage = ({ row }: Props) => {
     }
   };
   return (
-    <form onSubmit={handelSubmit} className="flex gap-2 items-center">
-      <Upload onChange={handelImage} />
-      <img src={urls} alt="" className="w-20 h-20" />
-      <button type="submit" className="bg-blue-700 text-white px-5 py-2 rounded-xl">
+    <form onSubmit={handelSubmit} className="">
+      {/* <Upload onChange={handelImage} /> */}
+      <div className="flex flex-col gap-2 ">
+        <h1>Image Uploaded :</h1>
+        <div className="flex gap-2 px-3">
+          {
+            urls.map((url) => (
+              <img
+                key={url}
+                src={url}
+                alt=""
+                className="w-24 h-24 border-2 border-gray-150
+                hover:border-blue-700 hover:border-2 duration-300 transition-all ease-in-out
+                rounded-xl"
+              />
+            ))
+          }
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <p>Add new images :</p>
+        <Inputs type="file" onChange={handelImage} />
+      <button
+        type="submit"
+        className="bg-blue-700 text-white px-5 py-2 rounded-xl"
+      >
         Update
       </button>
+      </div>
     </form>
   );
 };
@@ -235,10 +259,10 @@ export const columns: ColumnDef<Data>[] = [
     header: "Image",
     cell: ({ row }) => {
       const trip = row.original;
-      return (
+      return (  
         <div className="flex justify-center items-center">
           <img
-            src={trip.img}
+            src={trip.pictures[0]}
             alt={trip.title}
             className="w-20 h-20 rounded-xl "
           />

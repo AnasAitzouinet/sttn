@@ -115,11 +115,11 @@ export const columns: ColumnDef<Data>[] = [
     header: "Nombre de personne",
   },
   {
-    accessorKey: "userSttn.name",
+    accessorKey: "userSttn",
     header: "User ",
     cell: ({ row }) => {
       const user = row.original.userSttn;
-
+      console.log(user);
       return (
         <Dialog>
           <DialogTrigger>

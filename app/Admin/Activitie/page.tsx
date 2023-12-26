@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 export default function Trips() {
   const [data, setData] = useState<Data[]>([]);
-
+  console.log(data);
   useEffect(() => {
     const SortData = (data: Data[]) => {
       return data.sort((a, b) => b.id - a.id);

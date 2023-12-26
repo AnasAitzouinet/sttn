@@ -4,15 +4,15 @@ mail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
 export async function POST(req: NextRequest) {
   const body = await req.json(); // or req.json() if you're expecting a JSON body
-  const { email, subject, message } = body;
+//   const { email, subject, message } = body;
   const msg = {
-    to: email,
-    from: "marwan.nejmeddine@gmail.com",
-    subject: subject,
-    text: message,
-    html: message,
+    to: "anasaw236@gmail.com",
+    from: "anas.mailnodesender@gmail.com",
+    subject: "subject",
+    text: "message",
+    html: "message",
 };
-try {
+try {   
     await mail.send(msg);
     return new NextResponse(JSON.stringify({ message: 'Email sent' }), {status:200});
 } catch (error) {

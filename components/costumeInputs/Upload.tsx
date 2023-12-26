@@ -42,7 +42,7 @@ export default function Upload({ onChange }: Props) {
       >
         Upload
       </motion.span>
-      <input id="file-upload" type="file" className="hidden" onChange={onChange} />
+      <input id="file-upload" multiple type="file" className="hidden" onChange={onChange} />
     </motion.label>
   );
 }

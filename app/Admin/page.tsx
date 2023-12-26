@@ -23,13 +23,14 @@ async function getData(): Promise<Data[]> {
 
 const Admin = () => {
   const [data, setData] = React.useState<Data[]>([]);
+  console.log(data[0]);
   const statue = data.map((item) => item.statue);
   useEffect(() => {
     getData().then((data) => {
       setData(data);
     });
   }, [statue]);
-14*9
+// 14*9
   return (
     <section className="bg-[#ebe9e9]">
       <header className="h-full w-full">

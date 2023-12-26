@@ -130,7 +130,7 @@ const LayoutAdmin = ({ children }: layoutProps) => {
               </motion.span>
             </div>
             <div
-            onClick={() => router.push("/Admin/Trips")}
+            onClick={() => router.push("/Admin/Activitie")}
               className="w-full h-[3rem] flex justify-center items-center gap-3
               bg-[#1f2937] rounded-xl hover:bg-sky-700 transition-all duration-300 ease-in-out cursor-pointer 
             border border-gray-400/40"
