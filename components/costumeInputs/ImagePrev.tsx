@@ -47,9 +47,17 @@ export default function ImagePrev({
       setLoaded(true);
     },
   });
+
+  
   return (
     <Dialog>
-      <DialogTrigger onClick={() => setCurrentSlide(0)} className="text-black">
+      <DialogTrigger
+      
+        onClick={() => {
+          setCurrentSlide(0);
+        }}
+        className="text-black z-50"
+      >
         {children}
       </DialogTrigger>
       <DialogContent className="max-w-6xl h-[90%] flex bg-transparent backdrop-blur-2xl ">

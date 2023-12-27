@@ -1,78 +1,14 @@
 "use client";
 import React from "react";
-import { KeenSliderOptions, useKeenSlider } from "keen-slider/react";
-import "keen-slider/keen-slider.min.css";
 import { IoLocationOutline } from "react-icons/io5";
-import res from "@/components/Reservations/Reserverations";
 import SkeletonSlider from "@/components/SkeletonSlider";
-import { Info } from "lucide-react";
 import ImagePrev from "@/components/costumeInputs/ImagePrev";
 
-// const trips = [
-//   {
-//     id: 1,
-//     title: "Adventure in the Mountains",
-//     img: "https://images.pexels.com/photos/2604792/pexels-photo-2604792.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-//     price: 500,
-//     description:
-//       "Experience the thrill of hiking in the breathtaking mountain landscapes.",
-//     city: "Mountainville",
-//   },
-//   {
-//     id: 2,
-//     title: "Beach Paradise Getaway",
-//     img: "https://images.pexels.com/photos/1076240/pexels-photo-1076240.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-//     price: 800,
-//     description:
-//       "Relax on the sun-kissed beaches and enjoy water sports in the crystal-clear waters.",
-//     city: "Beachtown",
-//   },
-//   {
-//     id: 3,
-//     title: "Historical Tour",
-//     img: "https://images.pexels.com/photos/3278939/pexels-photo-3278939.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-//     price: 400,
-//     description:
-//       "Discover the rich history of our city with guided tours to iconic landmarks.",
-//     city: "Historyburg",
-//   },
-//   {
-//     id: 4,
-//     title: "Cultural Exploration",
-//     img: "https://images.pexels.com/photos/450038/pexels-photo-450038.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-//     price: 600,
-//     description:
-//       "Immerse yourself in the diverse cultures and traditions of our city.",
-//     city: "Culturalopolis",
-//   },
-//   {
-//     id: 4,
-//     title: "Cultural Exploration",
-//     img: "https://images.pexels.com/photos/450038/pexels-photo-450038.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-//     price: 600,
-//     description:
-//       "Immerse yourself in the diverse cultures and traditions of our city.",
-//     city: "Culturalopolis",
-//   },
-//   {
-//     id: 4,
-//     title: "Cultural Exploration",
-//     img: "https://images.pexels.com/photos/450038/pexels-photo-450038.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-//     price: 600,
-//     description:
-//       "Immerse yourself in the diverse cultures and traditions of our city.",
-//     city: "Culturalopolis",
-//   },
-//   {
-//     id: 4,
-//     title: "Cultural Exploration",
-//     img: "https://images.pexels.com/photos/450038/pexels-photo-450038.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-//     price: 600,
-//     description:
-//       "Immerse yourself in the diverse cultures and traditions of our city.",
-//     city: "Culturalopolis",
-//   },
-// ];
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+
 
 interface Trip {
   id: number;
@@ -82,72 +18,52 @@ interface Trip {
   description: string;
   city: string;
 }
-interface Props {
-  filter?: string;
-}
-const Tours = ({ filter }: Props) => {
+const Tours = () => {
   const [hovered, setHovered] = React.useState<number | null>(null); // Initialize with null
   const [trips, setTrips] = React.useState<Trip[]>([]);
-  const [Ftrips, setFtrips] = React.useState<Trip[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const [imagesLoaded, setImagesLoaded] = React.useState<boolean>(false);
-  const [currentImage, setCurrentImage] = React.useState(0);
+  const [loading, setLoading] = React.useState<boolean>(true);
 
-  const sildeOptions: KeenSliderOptions = React.useMemo(
-    () => ({
-      breakpoints: {
-        "(min-width: 400px)": {
-          slides: { perView: 2.5, spacing: 5, origin: "auto" },
-        },
-        "(min-width: 768px)": {
-          slides: { perView: 3.5, spacing: 15, origin: "auto" },
-        },
-        "(min-width: 1024px)": {
-          slides: { perView: 4.5, spacing: 15, origin: "auto" },
-        },
-      },
-      slides: { perView: 2, spacing: 5 },
-    }),
-    []
-  );
-
-  const [ref, refs] = useKeenSlider<HTMLDivElement>(sildeOptions);
-  React.useEffect(() => {
-    if (imagesLoaded && refs.current) {
-      refs.current.update(sildeOptions);
-    }
-  }, [refs, sildeOptions, imagesLoaded]);
-
-  React.useEffect(() => {
-    const getTrips = async () => {
-      const res = await fetch(
+  const FetchTrips = React.useCallback(async () => {
+    try {
+      const respons = await fetch(
         "https://gestionres-production.up.railway.app/Trips/"
       );
-      const data = await res.json();
-      if (res.ok) {
-        setLoading(true);
-        setTrips(data);
-      }
-    };
-    getTrips();
+      const data = await respons.json();
+      setTrips(data);
+    } catch (error) {
+      console.log("Failed to fetch trips", error);
+    }finally{
+      setLoading(false)
+    }
   }, []);
 
   React.useEffect(() => {
-    if (filter) {
-      const filterdTrips = trips.filter((trip) =>
-        trip.title.toLowerCase().includes(filter.toLowerCase())
-      );
-      refs?.current?.update(sildeOptions);
-      setFtrips(filterdTrips);
-    } else if (filter == "") {
-      refs?.current?.update(sildeOptions);
-      setFtrips(trips);
-    }
-  }, [filter, trips, refs, sildeOptions]);
+    FetchTrips();
+  }, [FetchTrips]);
 
   return (
-    <div ref={ref} className="keen-slider relative w-full">
-      {!loading ? (
+    <Swiper
+      slidesPerView={1.5}
+      centeredSlides={false}
+      freeMode={true}
+      breakpoints={{
+        320: {
+          slidesPerView: 2.5,
+          spaceBetween: 10,
+        },
+        640: {
+          slidesPerView: 3.5,
+          spaceBetween: 10,
+        },
+
+        1024: {
+          slidesPerView: 4.5,
+          spaceBetween: 10,
+        },
+      }}
+      className=" relative w-full"
+    >
+      {loading ? (
         ""
       ) : (
         <div
@@ -158,37 +74,36 @@ const Tours = ({ filter }: Props) => {
           }}
         ></div>
       )}
-
-      {!loading ? (
+      {loading ? (
         <SkeletonSlider />
       ) : (
-        Ftrips.map((trip, index) => (
-          <ImagePrev
-            type="Trip"
+        trips.map((trip, index) => (
+          <SwiperSlide
             key={trip.id}
-            id={trip.id}
-            title={trip.title}
-            price={trip.price}
-            description={trip.description}
-            city={trip.city}
-            images={trip.pictures}
+            className="min-h-[10rem] sm:min-h-[17rem] w-full relative cursor-pointer overflow-hidden rounded-xl  border border-gray-300/40 "
+            onMouseEnter={() => {
+              setHovered(trip.id);
+            }}
+            onMouseLeave={() => setHovered(null)} // Reset to null on mouse leave
           >
-            <div
-              className="keen-slider__slide h-full w-full relative cursor-pointer overflow-hidden rounded-xl  border border-gray-300/40 "
-              onMouseEnter={() => {
-                setHovered(trip.id);
-              }}
-              onMouseLeave={() => setHovered(null)} // Reset to null on mouse leave
+            <ImagePrev
+              type="Trip"
+              key={trip.id}
+              id={trip.id}
+              title={trip.title}
+              price={trip.price}
+              description={trip.description}
+              city={trip.city}
+              images={trip.pictures}
             >
               <img
                 src={trip.pictures[0]}
                 alt={trip.title}
-                onLoad={() => setImagesLoaded(true)}
-                className={`object-cover h-[10rem] sm:h-[17rem]  w-full duration-500 transition-all ease-in-out
+                className={`object-cover min-h-[10rem] sm:min-h-[17rem]  w-full duration-500 transition-all ease-in-out
             ${
               hovered === trip.id
                 ? "scale-125 duration-500 transition-all "
-                : ""
+                : "scale-105"
             }
             `}
               />
@@ -211,14 +126,14 @@ const Tours = ({ filter }: Props) => {
             font-medium w-full text-center"
                 >
                   <IoLocationOutline />
-                  {trip.city }
+                  {trip.city}
                 </div>
               </div>
-            </div>
-          </ImagePrev>
+            </ImagePrev>
+          </SwiperSlide>
         ))
       )}
-    </div>
+    </Swiper>
   );
 };
 

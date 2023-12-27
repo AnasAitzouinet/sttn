@@ -190,7 +190,7 @@ const Destinations = () => {
           >
             Trips :
           </h1>
-          <Tours filter={search} />
+          <Tours />
         </section>
         <section
           className="
