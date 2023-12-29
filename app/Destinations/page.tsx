@@ -1,6 +1,5 @@
 "use client";
 
-import SearchBar from "@/components/SearchBar";
 import React from "react";
 import Tours from "./Tours";
 import Other from "./Other";
@@ -13,11 +12,10 @@ import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Auth from "@/components/Auth/Auth";
 import { AiOutlineClose } from "react-icons/ai";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 
 const Destinations = () => {
   const [auth, setAuth] = useState<string | false | JwtPayload>(false);
-  const [search, setSearch] = useState<string>("");
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
@@ -39,13 +37,13 @@ const Destinations = () => {
       }}
     >
       <div
-        className="h-full w-screen  "
+        className="h-full w-screen"
         style={{
           background:
             "linear-gradient(180deg, rgb(8, 8, 8) 4%, transparent 70%)",
         }}
       >
-         <nav className=" w-full flex justify-between items-center px-7 z-50">
+        <nav className=" w-full flex justify-between items-center px-7 z-50">
           <h1 className="py-3  text-center text-white font-bold text-3xl">
             STTN
           </h1>
@@ -103,9 +101,7 @@ const Destinations = () => {
                 </li>
                 <div className="border w-3/4 border-gray-900"></div>
                 <Auth>
-                <li>
-                  Sign up
-                </li>
+                  <li>Sign up</li>
                 </Auth>
               </ul>
             </div>
@@ -133,51 +129,25 @@ const Destinations = () => {
                   className="cursor-pointer"
                 >
                   <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback className="capitalize">{
-                    //@ts-ignore
-                    auth.name.split(" ").map((name) => name[0]).join("")
-                    }</AvatarFallback>
+                  <AvatarFallback className="capitalize">
+                    {
+                      //@ts-ignore
+                      auth.name
+                        .split(" ")
+                        .map((name : string) => name[0])
+                        .join("")
+                    }
+                  </AvatarFallback>
                 </Avatar>
               ) : (
                 <Auth>
-                  <NavLink name="Sign up"/>
+                  <NavLink name="Sign up" />
                 </Auth>
               )}
             </ul>
           </div>
         </nav>
-        {/* <nav className="w-screen flex flex-row items-center justify-around gap-1  py-2 text-white font-extralight">
-          <ul className="text-white flex items-center gap-5 font-extralight">
-            <NavLink name="Home" paths="/" />
-            <NavLink name="Destinations" paths="/Destinations" />
-            <NavLink name="Who we are ?" paths="/Who-we-are" />
-            <NavLink name="Contact us" paths="Contact-us" />
-          </ul>
-          <div className="flex gap-3 justify-center items-center list-none">
-            <SearchBar onChange={(e) => setSearch(e.target.value)} />
-            {auth ? (
-              <Avatar
-                onClick={() => router.push("/Profile")}
-                className="cursor-pointer"
-              >
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback className="capitalize">
-                  {
-                    //@ts-ignore
-                    auth.name
-                      .split(" ")
-                      .map((name: string) => name[0])
-                      .join("")
-                  }
-                </AvatarFallback>
-              </Avatar>
-            ) : (
-              <Auth>
-                <NavLink name="Sign up" />
-              </Auth>
-            )}
-          </div>
-        </nav> */}
+
         <section
           className="
         px-5 py-5  gap-2 flex flex-col 

@@ -3,9 +3,8 @@ import React from "react";
 import { IoLocationOutline } from "react-icons/io5";
 import SkeletonSlider from "@/components/SkeletonSlider";
 import ImagePrev from "@/components/costumeInputs/ImagePrev";
-
 import { Swiper, SwiperSlide } from "swiper/react";
-
+import Image from 'next/image'
 // Import Swiper styles
 import "swiper/css";
 
@@ -96,7 +95,12 @@ const Tours = () => {
               city={trip.city}
               images={trip.pictures}
             >
-              <img
+              <Image
+                fill={true}
+                fetchPriority="high"
+
+                loading="eager"
+                quality={70}
                 src={trip.pictures[0]}
                 alt={trip.title}
                 className={`object-cover min-h-[10rem] sm:min-h-[17rem]  w-full duration-500 transition-all ease-in-out
@@ -136,5 +140,9 @@ const Tours = () => {
     </Swiper>
   );
 };
+
+const loader = () => {
+  return '/loading.gif';
+}
 
 export default Tours;

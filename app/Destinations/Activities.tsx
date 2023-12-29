@@ -20,12 +20,9 @@ interface Trip {
 }
 
 const Activites = () => {
-
   const [hovered, setHovered] = React.useState<number | null>(null); // Initialize with null
-
   const [trips,   setTrips] = React.useState<Trip[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
-
   const FetchTrips = React.useCallback(async () => {
     try {
       const respons = await fetch(
@@ -39,11 +36,9 @@ const Activites = () => {
       setLoading(false);
     }
   }, []);
-
   React.useEffect(() => {
     FetchTrips();
   }, [FetchTrips]);
-
   return (
     <Swiper
       slidesPerView={1.5}
