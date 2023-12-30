@@ -24,17 +24,18 @@ import { TabsTrigger } from "../ui/tabs";
 import { useEffect, useState } from "react";
 import Loader from "@/components/loader";
 import UseSignUp from "../Auth/SignUp";
-type FormTrip = {
-  email: string | any;
-  phone: string;
-  FullName: string;
-  dateFrom: string | null;
-  description: string;
-  language: string;
-  people: number;
-  tripID: number;
-  userId: number;
-};
+type FormActi = {
+    email: string | any;
+    phone: string;
+    FullName: string;
+    date: string | null;
+    description: string;
+    language: string;
+    people: number;
+    type: string;
+    userId: number;
+    activitieID: number;
+  };
 interface ReservationProps {
   children: React.ReactNode;
   id?: number;
@@ -44,16 +45,16 @@ interface ReservationProps {
   FullName?: string;
 }
 type Trips = {
-  id: number;
-  title: string;
-  img: string;
-  price: number;
-  description: string;
-  city: string;
+    id: number;
+    title: string;
+    pictures: string[];
+    price: number;
+    description: string;
+    place: string;
 };
 const GetTrips = async () => {
   const res = await fetch(
-    "https://gestionres-production.up.railway.app/Trips/",
+    "https://gestionres-production.up.railway.app/Activity/",
     {
       method: "get",
     }
@@ -65,26 +66,28 @@ const GetTrips = async () => {
     throw new Error(`HTTP error! status: ${res.status}`);
   }
 };
-export default function AdminRes({ children }: ReservationProps) {
-  const [form, setForm] = useState<FormTrip>({
+export default function ActivitieRes({ children }: ReservationProps) {
+  const [form, setForm] = useState<FormActi>({
     email: "",
     phone: "",
     FullName: "",
-    dateFrom: null,
+    date: null,
     description: "",
     language: "",
+    type: "",
+    activitieID: 0,
     people: 0,
-    tripID: 0,
     userId: 0,
   });
   const [formError, setFormError] = useState({
     email: false,
     phone: false,
     FullName: false,
-    dateFrom: false,
+    date: false,
     people: false,
   });
   const [loading, setLoading] = useState(false);
+  console.log(form, formError);
 
   const [types, setTypes] = useState("Shuttle");
  
@@ -93,7 +96,7 @@ export default function AdminRes({ children }: ReservationProps) {
   };
   const handleSelectChangeTrip = (value: string) => {
     const newValue = parseInt(value);
-    setForm({ ...form, tripID: newValue });
+    setForm({ ...form, activitieID: newValue });
   };
   
   const [trips, setTrips] = useState<Trips[]>([]);
@@ -107,7 +110,7 @@ export default function AdminRes({ children }: ReservationProps) {
 
   const handleError = () => {
     const EmailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
-    const { FullName, email, phone, dateFrom, people, language } = form;
+    const { FullName, email, phone, date, people, language } = form;
 
     if (
       !(
@@ -115,7 +118,7 @@ export default function AdminRes({ children }: ReservationProps) {
         email &&
         phone &&
         phone.length >= 10 &&
-        dateFrom &&
+        date &&
         people &&
         language
       )
@@ -124,7 +127,7 @@ export default function AdminRes({ children }: ReservationProps) {
         email: !email,
         phone: !phone,
         FullName: !FullName,
-        dateFrom: !dateFrom,
+        date: !date,
         people: !people,
       });
       notify({ message: "Please fill all the fields", status: "error" });
@@ -137,11 +140,11 @@ export default function AdminRes({ children }: ReservationProps) {
       return false;
     }
 
-    const dateFromObj = new Date(dateFrom);
+    const dateFromObj = new Date(date);
     const now = new Date();
 
     if (dateFromObj < now ) {
-      setFormError({ ...formError, dateFrom: true });
+      setFormError({ ...formError, date: true });
       notify({ message: "Dates can't be before today", status: "error" });
       return false;
     }
@@ -162,11 +165,12 @@ export default function AdminRes({ children }: ReservationProps) {
       phone,
       numberOfPersons: people,
       language,
-      trip: { id: form.tripID },
-      dateFrom,
+      activity: { id: form.activitieID },
+      date,
       types,
       userSttn: { id: form.userId },
     };
+    console.log(newForm);
     return newForm;
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -280,7 +284,7 @@ export default function AdminRes({ children }: ReservationProps) {
                     />
                     <Select onValueChange={handleSelectChangeTrip}>
                       <SelectTrigger className="w-full rounded-xl bg-transparent border-gray-300/40">
-                        <SelectValue placeholder="Trips" />
+                        <SelectValue placeholder="Activities" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
                         {trips.map((trip) => (
@@ -301,7 +305,7 @@ export default function AdminRes({ children }: ReservationProps) {
                         <input
                           type="date"
                           onChange={(e) =>
-                            setForm({ ...form, dateFrom: e.target.value })
+                            setForm({ ...form, date: e.target.value })
                           }
                           
                           className="w-full border   border-gray-300/40 rounded-xl p-2 bg-transparent"

@@ -35,6 +35,9 @@
     --ring: 0 0% 83.1%;
   }
 }
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
 
 @layer base {
   * {

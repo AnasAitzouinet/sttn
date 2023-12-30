@@ -22,13 +22,15 @@ export type Data = {
     id: number;
     title: string;
     img: string;
-    price: number;
+    priceShutlle: number;
+    pricePrivate: number;
     description: string;
     place: string;
   };
   date: string;
   nbrPerson: string;
   language: string;
+  type: string;
   email: string;
   phone: string;
   details: string;
@@ -85,6 +87,10 @@ export const columns: ColumnDef<Data>[] = [
         </span>
         )
     },
+  },
+  {
+    accessorKey: "type",
+    header: "Type",
   },
   {
     accessorKey: "activity.title",
@@ -152,6 +158,7 @@ export const columns: ColumnDef<Data>[] = [
                 Phone number:{" "}
                 <span className="text-gray-100">{user.phone_number}</span>
               </p>
+              
               <p>
                 Email: <span className="text-gray-100">{user.email}</span>
               </p>
@@ -206,6 +213,9 @@ export const columns: ColumnDef<Data>[] = [
                 </span>
               </p>
               <p>
+                Type: <span className="text-gray-100">{data.type}</span>
+              </p>
+              <p>
                 Email: <span className="text-gray-100">{data.email}</span>
               </p>
               <p>
@@ -233,7 +243,9 @@ export const columns: ColumnDef<Data>[] = [
                 place: <span className="text-gray-100 ">{data.activity.place}</span>
               </p>
               <p>
-                Price: <span className="text-gray-100">{data.activity.price}</span>
+                Price Private: <span className="text-gray-100">{data.activity.pricePrivate}</span>
+                Price Shuttle: <span className="text-gray-100">{data.activity.priceShutlle}</span>
+
               </p>
               <p>
                 Description:{" "}

@@ -17,11 +17,13 @@ import {
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 import { DialogClose } from "@radix-ui/react-dialog";
-type Trip = {
+
+export type Trip = {
   id: number;
   title: string;
   img: string;
-  price: number;
+  priceShuttle: number;
+  pricePrivate: number;
   description: string;
   city: string;
 };
@@ -30,7 +32,7 @@ export type Data = {
   id: number;
   trip: Trip;
   dateFrom: string;
-  dateTo: string;
+  type: string;
   numberOfPersons: string;
   language: string;
   email: string;
@@ -114,6 +116,10 @@ export const columns: ColumnDef<Data>[] = [
     header: "Trip",
   },
   {
+    accessorKey: "type",
+    header: "Type",
+  },
+  {
     accessorKey: "email",
     header: "Email",
   },
@@ -124,21 +130,6 @@ export const columns: ColumnDef<Data>[] = [
       return (
         <span className="">
           {new Date(row.original.dateFrom).toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </span>
-      );
-    },
-  },
-  {
-    accessorKey: "dateTo",
-    header: "date To",
-    cell: ({ row }) => {
-      return (
-        <span className="">
-          {new Date(row.original.dateTo).toLocaleDateString(undefined, {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -248,6 +239,9 @@ export const columns: ColumnDef<Data>[] = [
                 </span>
               </p>
               <p>
+                Type: <span className="text-gray-100">{data.type}</span>
+              </p>
+              <p>
                 Email: <span className="text-gray-100">{data.email}</span>
               </p>
               <p>
@@ -257,16 +251,6 @@ export const columns: ColumnDef<Data>[] = [
                 Date from:{" "}
                 <span className="text-gray-100">
                   {new Date(data.dateFrom).toLocaleDateString(undefined, {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </span>
-              </p>
-              <p>
-                Date to:{" "}
-                <span className="text-gray-100">
-                  {new Date(data.dateTo).toLocaleDateString(undefined, {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
@@ -284,7 +268,8 @@ export const columns: ColumnDef<Data>[] = [
                 City: <span className="text-gray-100 ">{data.trip.city}</span>
               </p>
               <p>
-                Price: <span className="text-gray-100">{data.trip.price}</span>
+                Price Shuttle: <span className="text-gray-100">{data.trip.priceShuttle}</span>
+                Price Private: <span className="text-gray-100">{data.trip.pricePrivate}</span>
               </p>
               <p>
                 Description:{" "}
