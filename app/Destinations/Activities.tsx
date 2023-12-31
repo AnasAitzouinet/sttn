@@ -10,7 +10,7 @@ import ImagePrev from "@/components/costumeInputs/ImagePrev";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
-interface Trip {
+interface Activity {
   id: number;
   title: string;
   pictures: string[];
@@ -21,24 +21,24 @@ interface Trip {
 
 const Activites = () => {
   const [hovered, setHovered] = React.useState<number | null>(null); // Initialize with null
-  const [trips,   setTrips] = React.useState<Trip[]>([]);
+  const [Activity,   setActivity] = React.useState<Activity[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
-  const FetchTrips = React.useCallback(async () => {
+  const FetchActivity = React.useCallback(async () => {
     try {
       const respons = await fetch(
         "https://gestionres-production.up.railway.app/Activity/"
       );
       const data = await respons.json();
-      setTrips(data);
+      setActivity(data);
     } catch (error) {
-      console.log("Failed to fetch trips", error);
+      console.log("Failed to fetch Activity", error);
     } finally {
       setLoading(false);
     }
   }, []);
   React.useEffect(() => {
-    FetchTrips();
-  }, [FetchTrips]);
+    FetchActivity();
+  }, [FetchActivity]);
   return (
     <Swiper
       slidesPerView={1.5}
@@ -75,7 +75,7 @@ const Activites = () => {
       {loading ? (
         <SkeletonSlider />
       ) : (
-        trips.map((trip, index) => (
+        Activity.map((trip, index) => (
           <SwiperSlide
             key={trip.id}
             className="min-h-[10rem] sm:min-h-[17rem] w-full relative cursor-pointer overflow-hidden rounded-xl  border border-gray-300/40 "
@@ -85,7 +85,7 @@ const Activites = () => {
             onMouseLeave={() => setHovered(null)} // Reset to null on mouse leave
           >
             <ImagePrev
-              type="Activity"
+              type="activity"
               key={trip.id}
               id={trip.id}
               title={trip.title}
