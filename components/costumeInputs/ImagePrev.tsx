@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import res from "@/components/Reservations/Reserverations";
 import { Star } from "lucide-react";
 import {
@@ -13,12 +9,13 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 interface Props {
   images: string[];
   children: React.ReactNode;
-  price: number;
+  priceShuttle: number;
+  pricePrivate: number;
   description: string;
   city?: string;
   title: string;
@@ -30,7 +27,8 @@ export default function ImagePrev({
   images,
   id,
   children,
-  price,
+  pricePrivate,
+  priceShuttle,
   description,
   city,
   title,
@@ -46,14 +44,9 @@ export default function ImagePrev({
           <CarouselContent>
             {images.map((item, i) => (
               <CarouselItem key={i} className="">
-                <AspectRatio ratio={16 / 9} >
-                  <img
-                    src={item}
-                    alt=""
-                    className="object-cover  rounded-xl"
-                  />
+                <AspectRatio ratio={16 / 9}>
+                  <img src={item} alt="" className="object-cover  rounded-xl" />
                 </AspectRatio>
-               
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -66,51 +59,91 @@ export default function ImagePrev({
       "
         >
           <h1 className="text-3xl text-start font-bold py-2">{title}</h1>
-          <h1 className="text-xl ">{price} Dh</h1>
-          <div className="flex ">
+          <h1 className="text-xl "><span className="text-emerald-500">{priceShuttle}500 Dh</span>  - Shuttle</h1>
+          <h1 className="text-xl ">price Private :{pricePrivate} Dh</h1>
+          {/* <div className="flex ">
             <Star className="fill-yellow-300 text-yellow-300 w-4 h-4" />
             <Star className="fill-yellow-300 text-yellow-300 w-4 h-4" />
             <Star className="fill-yellow-300 text-yellow-300 w-4 h-4" />
             <Star className="fill-yellow-300 text-yellow-300 w-4 h-4" />
             <Star className="text-yellow-300 w-4 h-4" />
-          </div>
+          </div> */}
           <div className="py-2">
             <div>
               <h2 className="py-3">{city || place}</h2>
               <p className="overflow-auto">
-                {
-                  open ? description : description.slice(0, 100) + " ..."
-                }
-                  <span onClick={()=> setOpen(!open)} className="text-xs font-bold text-sky-400 cursor-pointer"> 
-                  {
-                    open ? " Read Less" : " Read More"
-                  }
-                  </span>
+                {open ? description : description.slice(0, 100) + " ..."}
+                <span
+                  onClick={() => setOpen(!open)}
+                  className="text-xs font-bold text-sky-400 cursor-pointer"
+                >
+                  {open ? " Read Less" : " Read More"}
+                </span>
               </p>
             </div>
             <div className="py-8 w-full  flex items-center justify-center">
               {type === "activity" ? (
-                <res.ReserverationsActi id={id} title={title}>
-                  <button
-                    type="submit"
-                    className="w-full px-8 bg-gray-600/40 backdrop-blur-xl border border-gray-300/10
+                <div className="flex gap-5">
+                  <res.ReserverationsActi
+                    id={id}
+                    title={title}
+                    ChosenType="shuttle"
+                  >
+                    <button
+                      type="submit"
+                      className="w-full px-8 bg-gray-600/40 backdrop-blur-xl border border-gray-300/10
               hover:bg-gray-600/10 duration-300 transition-all ease-in-out
               rounded-xl text-white py-2 font-semibold"
+                    >
+                      Shuttle
+                    </button>
+                  </res.ReserverationsActi>
+                  <res.ReserverationsActi
+                    id={id}
+                    title={title}
+                    ChosenType="private"
                   >
-                    Book Now
-                  </button>
-                </res.ReserverationsActi>
+                    <button
+                      type="submit"
+                      className="w-full px-8 bg-gray-600/40 backdrop-blur-xl border border-gray-300/10
+            hover:bg-gray-600/10 duration-300 transition-all ease-in-out
+            rounded-xl text-white py-2 font-semibold"
+                    >
+                      Private
+                    </button>
+                  </res.ReserverationsActi>
+                </div>
               ) : (
-                <res.Reserverations id={id} title={title}>
-                  <button
-                    type="submit"
-                    className="w-[100%] px-8  bg-gray-600/40 backdrop-blur-xl border border-gray-300/10
+                <div className="flex gap-5">
+                  <res.Reserverations
+                    id={id}
+                    title={title}
+                    ChosenType="shuttle"
+                  >
+                    <button
+                      type="submit"
+                      className="w-[100%] px-8  bg-gray-600/40 backdrop-blur-xl border border-gray-300/10
                hover:bg-gray-600/10 duration-300 transition-all ease-in-out
                rounded-xl text-white py-2 font-semibold"
+                    >
+                      shuttle
+                    </button>
+                  </res.Reserverations>
+                  <res.Reserverations
+                    id={id}
+                    title={title}
+                    ChosenType="private"
                   >
-                    Book Now
-                  </button>
-                </res.Reserverations>
+                    <button
+                      type="submit"
+                      className="w-[100%] px-8  bg-gray-600/40 backdrop-blur-xl border border-gray-300/10
+              hover:bg-gray-600/10 duration-300 transition-all ease-in-out
+              rounded-xl text-white py-2 font-semibold"
+                    >
+                      Private
+                    </button>
+                  </res.Reserverations>
+                </div>
               )}
             </div>
           </div>

@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model activity {
+  id                Int                 @id @default(autoincrement())
+  description       String?             @db.VarChar(255)
+  place             String?             @db.VarChar(255)
+  price             Int?
+  title             String?             @db.VarChar(255)
+  price_private     Int?
+  price_shutlle     Int?
+  activity_pictures activity_pictures[] @ignore
+  reservation_acti  reservation_acti[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model activity_pictures {
+  activity_id Int
+  pictures    String?  @db.VarChar(255)
+  activity    activity @relation(fields: [activity_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkq79hqfs9vhbj4pkdn3klw0mvs")
+
+  @@ignore
+}
+
+model contact {
+  id          Int     @id @default(autoincrement())
+  description String? @db.VarChar(255)
+  email       String? @db.VarChar(255)
+  phone       String? @db.VarChar(255)
+  subject     String? @db.VarChar(255)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model res_arrival_departure {
+  id          Int        @id @default(autoincrement())
+  created_at  DateTime?  @db.Timestamp(6)
+  date        DateTime   @db.Timestamp(6)
+  description String     @db.VarChar(255)
+  email       String     @db.VarChar(255)
+  phone       String     @db.VarChar(255)
+  place       String     @db.VarChar(255)
+  statue      String?    @db.VarChar(255)
+  type        String?    @db.VarChar(255)
+  user_id     Int?
+  user_sttn   user_sttn? @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkn2qcjslow02chka6isb8dh9ii")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model reservation_acti {
+  id             Int        @id @default(autoincrement())
+  created_at     DateTime   @db.Timestamp(6)
+  date           DateTime   @db.Timestamp(6)
+  details        String     @db.VarChar(255)
+  email          String     @db.VarChar(255)
+  language       String     @db.VarChar(255)
+  nbr_person     String     @db.VarChar(255)
+  phone          String     @db.VarChar(255)
+  statue         String?    @db.VarChar(255)
+  activity_title Int?
+  user_id        Int?
+  type           String?    @db.VarChar(255)
+  user_sttn      user_sttn? @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkf69tt4mq4vkkbr8ab01vuc2xw")
+  activity       activity?  @relation(fields: [activity_title], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fksdstk9jfl0x2xlopvpjh3m82m")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model reservation_trip {
+  id                Int        @id @default(autoincrement())
+  created_at        DateTime   @db.Timestamp(6)
+  date_from         String     @db.VarChar(255)
+  details           String     @db.VarChar(255)
+  email             String     @db.VarChar(255)
+  language          String     @db.VarChar(255)
+  number_of_persons String     @db.VarChar(255)
+  phone             String     @db.VarChar(255)
+  statue            String?    @db.VarChar(255)
+  type              String?    @db.VarChar(255)
+  trip_id           Int?
+  user_id           Int?
+  trips             trips?     @relation(fields: [trip_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk2skwr66q4d3vnd6oyreyi20jq")
+  user_sttn         user_sttn? @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkqbwurvg9fyeigtbu2sf0163o1")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model trip_pictures {
+  trip_id  Int
+  pictures String? @db.VarChar(255)
+  trips    trips   @relation(fields: [trip_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk3cxmkdbqqyu3kxw8rr8tqb2ix")
+
+  @@ignore
+}
+
+model trips {
+  id               Int                @id @default(autoincrement())
+  city             String?            @db.VarChar(255)
+  description      String?            @db.VarChar(255)
+  price            Int?
+  title            String?            @db.VarChar(255)
+  duration         String?            @db.VarChar(255)
+  price_private    Int?
+  price_shuttle    Int?
+  reservation_trip reservation_trip[]
+  trip_pictures    trip_pictures[]    @ignore
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model user_sttn {
+  id                    Int                     @id @default(autoincrement())
+  email                 String                  @unique @db.VarChar(255)
+  name                  String?                 @db.VarChar(255)
+  password              String?                 @db.VarChar(255)
+  phone_number          String?                 @db.VarChar(255)
+  role                  String?                 @db.VarChar(255)
+  res_arrival_departure res_arrival_departure[]
+  reservation_acti      reservation_acti[]
+  reservation_trip      reservation_trip[]
+  paymentIntent         paymentIntent?
+}
+
+model Verifications {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+model paymentIntent {
+  id                    String    @id @default(cuid())
+  userId                Int       @unique
+  stripeCustomerId      String?   @unique @map("stripe_customer_id")
+  stripePaymentIntentId String?   @unique @map("stripe_payment_intent_id")
+  stripePriceId         String?   @unique @map("stripe_price_id")
+  user                  user_sttn @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

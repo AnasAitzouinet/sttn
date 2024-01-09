@@ -4,16 +4,16 @@ import { IoLocationOutline } from "react-icons/io5";
 import SkeletonSlider from "@/components/SkeletonSlider";
 import ImagePrev from "@/components/costumeInputs/ImagePrev";
 import { Swiper, SwiperSlide } from "swiper/react";
-import Image from 'next/image'
+import Image from "next/image";
 // Import Swiper styles
 import "swiper/css";
-
 
 interface Trip {
   id: number;
   title: string;
   pictures: string[];
-  price: number;
+  priceShuttle: number;
+  pricePrivate: number;
   description: string;
   city: string;
 }
@@ -31,8 +31,8 @@ const Tours = () => {
       setTrips(data);
     } catch (error) {
       console.log("Failed to fetch trips", error);
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -90,7 +90,8 @@ const Tours = () => {
               key={trip.id}
               id={trip.id}
               title={trip.title}
-              price={trip.price}
+              pricePrivate={trip.pricePrivate}
+              priceShuttle={trip.priceShuttle}
               description={trip.description}
               city={trip.city}
               images={trip.pictures}
@@ -98,7 +99,6 @@ const Tours = () => {
               <Image
                 fill={true}
                 fetchPriority="high"
-
                 loading="eager"
                 quality={70}
                 src={trip.pictures[0]}
@@ -142,7 +142,7 @@ const Tours = () => {
 };
 
 const loader = () => {
-  return '/loading.gif';
-}
+  return "/loading.gif";
+};
 
 export default Tours;

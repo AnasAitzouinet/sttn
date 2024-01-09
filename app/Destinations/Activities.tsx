@@ -14,7 +14,8 @@ interface Activity {
   id: number;
   title: string;
   pictures: string[];
-  price: number;
+  priceShuttle: number;
+  pricePrivate: number;
   description: string;
   place: string;
 }
@@ -89,7 +90,8 @@ const Activites = () => {
               key={trip.id}
               id={trip.id}
               title={trip.title}
-              price={trip.price}
+              pricePrivate={trip.pricePrivate}
+              priceShuttle={trip.priceShuttle}
               description={trip.description}
               place={trip.place}
               images={trip.pictures}

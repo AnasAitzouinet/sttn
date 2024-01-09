@@ -32,6 +32,8 @@ interface ReservationProps {
   email?: string;
   phone?: string;
   FullName?: string;
+  duration?: string;
+  ChosenType?: string;
 }
 
 type Form = {
@@ -63,6 +65,8 @@ const Reserverations = ({
   email,
   phone,
   FullName,
+  duration,
+  ChosenType,
 }: ReservationProps) => {
   const [form, setForm] = useState<FormTrip>({
     email: "",
@@ -147,20 +151,33 @@ const Reserverations = ({
     const dateObj = new Date(datefrom);
     const now = new Date();
     const SevenDays = new Date();
+    const twoDays = new Date();
     SevenDays.setDate(now.getDate() + 7);
+    twoDays.setDate(now.getDate() + 2);
+
     if (dateObj < now) {
       setFormError({ ...formError, datefrom: true });
       notify({ message: "Dates can't be before today", status: "error" });
       return false;
     }
-
-    if (dateObj < SevenDays) {
-      setFormError({ ...formError, datefrom: true });
-      notify({
-        message: "Date from can't be less than 7 days from now",
-        status: "error",
-      });
-      return false;
+    if (duration === "3days") {
+      if (dateObj < twoDays) {
+        setFormError({ ...formError, datefrom: true });
+        notify({
+          message: "Date from can't be less than 48h from now",
+          status: "error",
+        });
+        return false;
+      }
+    } else {
+      if (dateObj < SevenDays) {
+        setFormError({ ...formError, datefrom: true });
+        notify({
+          message: "Date from can't be less than 7 days from now",
+          status: "error",
+        });
+        return false;
+      }
     }
 
     if (people < 1) {
@@ -177,7 +194,7 @@ const Reserverations = ({
       phone,
       numberOfPersons: people,
       language,
-      type,
+      type: ChosenType,
       trip: { id },
       details: description,
       dateFrom: datefrom,
@@ -266,15 +283,12 @@ const Reserverations = ({
               onSubmit={handleSubmit}
               className="grid grid-rows-1 gap-2 w-full "
             >
-              <h2>
-                Select type <span className="text-red-500">*</span> :
-              </h2>
+              <h2>Type Selected :</h2>
               <div className="flex gap-2">
                 <div
-                  onClick={() => setType("shuttle")}
-                  className={`px-2 py-1 border  rounded-xl cursor-pointer transition-all duration-300 ease-in-out
+                  className={`px-2 py-1 border  rounded-xl  transition-all duration-300 ease-in-out
                 ${
-                  type === "shuttle"
+                  ChosenType === "shuttle"
                     ? "border-blue-700 text-blue-500"
                     : "border-gray-300/20"
                 }
@@ -283,11 +297,10 @@ const Reserverations = ({
                   shuttle
                 </div>
                 <div
-                  onClick={() => setType("private")}
-                  className={`px-2 py-1 border  rounded-xl cursor-pointer transition-all duration-300 ease-in-out
+                  className={`px-2 py-1 border  rounded-xl  transition-all duration-300 ease-in-out
                 ${
-                  type === "private"
-                    ? "border-blue-700 text-blue-500 "
+                  ChosenType === "private"
+                    ? "border-blue-700 text-blue-500"
                     : "border-gray-300/20"
                 }
                 `}
@@ -411,6 +424,7 @@ const ReserverationsActi = ({
   email,
   phone,
   FullName,
+  ChosenType,
 }: ReservationProps) => {
   const [form, setForm] = useState<Form>({
     email: "",
@@ -433,7 +447,6 @@ const ReserverationsActi = ({
   });
   const [loading, setLoading] = useState(false); // Added state
   const [LoggedIn, setLoggedIn] = useState(false);
-  const [type, setType] = useState("shuttle"); // Added state
 
   useEffect(() => {
     const Auth = async () => {
@@ -523,7 +536,7 @@ const ReserverationsActi = ({
       email,
       phone,
       nbrPerson: people,
-      type,
+      type: ChosenType,
       language,
       activity: { id },
       details: description,
@@ -547,6 +560,10 @@ const ReserverationsActi = ({
           FullName: form.FullName,
           email: form.email,
           phone: form.phone,
+        }).then((res) => {
+          console.log(res);
+          notify({ message: "Reservation created", status: "success" });
+          return res;
         });
         if (register) {
           const latestForm = { ...newForm, userSttn: { id: register.data.id } };
@@ -563,7 +580,8 @@ const ReserverationsActi = ({
           );
           if (res.ok) {
             setLoading(false);
-            notify({ message: "Reservation created", status: "success" });
+            
+            notify({ message: "Reservation created , check your email", status: "success" });
             return;
           }
         } else {
@@ -613,15 +631,12 @@ const ReserverationsActi = ({
               onSubmit={handleSubmit}
               className="grid grid-rows-1 gap-2 w-full "
             >
-              <h2>
-                Select type <span className="text-red-500">*</span> :
-              </h2>
+              <h2>Type Selected :</h2>
               <div className="flex gap-2">
                 <div
-                  onClick={() => setType("shuttle")}
-                  className={`px-2 py-1 border  rounded-xl cursor-pointer transition-all duration-300 ease-in-out
+                  className={`px-2 py-1 border  rounded-xl  transition-all duration-300 ease-in-out
                 ${
-                  type === "shuttle"
+                  ChosenType === "shuttle"
                     ? "border-blue-700 text-blue-500"
                     : "border-gray-300/20"
                 }
@@ -630,10 +645,9 @@ const ReserverationsActi = ({
                   shuttle
                 </div>
                 <div
-                  onClick={() => setType("private")}
-                  className={`px-2 py-1 border  rounded-xl cursor-pointer transition-all duration-300 ease-in-out
+                  className={`px-2 py-1 border  rounded-xl  transition-all duration-300 ease-in-out
                 ${
-                  type === "private"
+                  ChosenType === "private"
                     ? "border-blue-700 text-blue-500"
                     : "border-gray-300/20"
                 }

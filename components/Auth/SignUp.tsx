@@ -1,6 +1,8 @@
 "use server";
 import Cookies from "../ServerCompoents/Cookies";
 
+import prisma from "@/lib/Prisma";
+
 interface Form {
   FullName: string;
   email: string;
@@ -11,7 +13,16 @@ type Reser = {
 }
 async function UseSignUp(Form: Form) {
   let statue: boolean = false;
-  console.log(Form);
+
+  const existingUser =  await prisma.user_sttn.findFirst({
+    where: {
+      email: Form.email,
+    }
+  })
+  if(existingUser){
+    let statue = 'user exist'
+    return { statue: statue, data: existingUser };
+  }
   try {
     const res = await fetch(
       "https://gestionres-production.up.railway.app/api/users/register",
