@@ -21,7 +21,7 @@ const NavLink = ({ name, paths }: { name: string; paths?: string }) => {
       onHoverEnd={() => setIsHovered(false)}
       className={`
             ${
-              name === "Sign up"
+              name === "Account"
                 ? "border border-gray-400/40 bg-sky-200/20  text-center  text-white hover:bg-sky-400/10 transition-all duration-500 ease-in-out backdrop-blur-sm px-5 py-2 rounded-full"
                 : ""
             }

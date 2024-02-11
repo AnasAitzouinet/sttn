@@ -4,8 +4,10 @@ import { NextResponse } from "next/server";
 
 import prisma from "@/lib/Prisma";
 import { stripe } from "@/lib/Stripe";
+import { sendPaymentConfirmation } from "@/lib/mail";
+import { parse } from "path";
 
-export async function POST(req: Request) {
+export async function POST(req: Request) {  
     const body = await req.text();
     const signature = headers().get("Stripe-Signature") as string;
 
@@ -36,10 +38,19 @@ export async function POST(req: Request) {
                     stripePaymentIntentId: paymentIntent.id as string,
                     amount: paymentIntent.amount as number,
                     userId: session.metadata.userId,
-                    stripeCustomerId: paymentIntent.customer as string,
+                    stripeCustomerId: paymentIntent.customer as any,
+                    reservationId: parseInt(session.metadata.resID),
                 },
             });
-    
+            await prisma.user_sttn.update({
+                where: {
+                    id: parseInt(session.metadata.userId as string)
+                },
+                data: {
+                    paymentIntentId: paymentIntent.id as string
+                }
+            })
+            await sendPaymentConfirmation({ email: paymentIntent.receipt_email as string, userId: session.metadata.userId })
         }
     }
 

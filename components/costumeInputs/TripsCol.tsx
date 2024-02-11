@@ -23,7 +23,8 @@ export type Data = {
   id: number;
   title: string;
   pictures: string[];
-  price: number;
+  priceShuttle: number;
+  pricePrivate: number;
   description: string;
   city: string;
 };
@@ -42,7 +43,8 @@ function TripsCol({ row, Close }: Props) {
     id: row.original.id,
     title: row.original.title,
     pictures: row.original.pictures,
-    price: row.original.price,
+    priceShuttle: row.original.priceShuttle,
+    pricePrivate: row.original.pricePrivate,
     description: row.original.description,
     city: row.original.city,
   });
@@ -82,9 +84,18 @@ function TripsCol({ row, Close }: Props) {
           placeholder={`Price `}
           type="text"
           onChange={(e) => {
-            setForm({ ...form, price: parseInt(e.target.value) });
+            setForm({ ...form, priceShuttle: parseInt(e.target.value) });
           }}
-          value={form.price.toString()}
+          value={form.priceShuttle.toString()}
+          className="text-gray-100"
+        />
+         <Input
+          placeholder={`Price `}
+          type="text"
+          onChange={(e) => {
+            setForm({ ...form, pricePrivate: parseInt(e.target.value) });
+          }}
+          value={form.pricePrivate.toString()}
           className="text-gray-100"
         />
       </div>
@@ -244,8 +255,12 @@ export const columns: ColumnDef<Data>[] = [
     header: "Title",
   },
   {
-    accessorKey: "price",
-    header: "price",
+    accessorKey: "priceShuttle",
+    header: "price Shuttle",
+  },
+  {
+    accessorKey: "pricePrivate",
+    header: "price Private",
   },
   {
     accessorKey: "description",

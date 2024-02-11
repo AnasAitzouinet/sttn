@@ -120,7 +120,7 @@ model user_sttn {
   res_arrival_departure res_arrival_departure[]
   reservation_acti      reservation_acti[]
   reservation_trip      reservation_trip[]
-  paymentIntent         paymentIntent?
+  paymentIntentId         String?                 @db.VarChar(255) @map("payment_intent") @unique
 }
 
 model Verifications {
@@ -133,10 +133,12 @@ model Verifications {
 }
 
 model paymentIntent {
-  id                    String    @id @default(cuid())
-  userId                Int       @unique
-  stripeCustomerId      String?   @unique @map("stripe_customer_id")
-  stripePaymentIntentId String?   @unique @map("stripe_payment_intent_id")
-  stripePriceId         String?   @unique @map("stripe_price_id")
-  user                  user_sttn @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                    String  @id @default(cuid())
+  userId                String
+  amount                Int
+  stripeCustomerId      String? @unique @map("stripe_customer_id")
+  stripePaymentIntentId String? @unique @map("stripe_payment_intent_id")
+  stripePriceId         String? @unique @map("stripe_price_id")
+  reservationId         Int?
+  // user                  user_sttn @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

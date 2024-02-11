@@ -1,7 +1,9 @@
 "use server";
+import { sendVerificationEmail } from "@/lib/mail";
 import Cookies from "../ServerCompoents/Cookies";
 
 import prisma from "@/lib/Prisma";
+import { passwordSender } from "@/actions/password";
 
 interface Form {
   FullName: string;
@@ -56,7 +58,7 @@ async function UseSignUp(Form: Form) {
         },
       });
       statue = true;
-
+      passwordSender(Form.email);
       return { statue: statue, data: reser };
     } else {
       // Handle error

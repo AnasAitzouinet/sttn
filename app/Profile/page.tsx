@@ -1,25 +1,27 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import { JwtPayload } from "jsonwebtoken";
 import CheckAuth from "@/components/ServerCompoents/CheckAuth";
-import SearchBar from "@/components/SearchBar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import NavLink from "@/components/Navbar";
 import { useRouter } from "next/navigation";
 import { Poppins } from "next/font/google";
-import { motion } from "framer-motion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenuProfile } from "@/components/costumeInputs/CostumeDropdownMenu";
-import { UserCircle, MapPin, Map } from "lucide-react";
+import { UserCircle, MapPin, Map , ArrowBigLeftDash , HomeIcon } from "lucide-react";
 import notify from "@/components/costumeInputs/Notify";
-import Profile from "./Home";
+import Profile from "./Profile";
+import Logout from "@/components/ServerCompoents/Logout";
+import { unstable_noStore } from "next/cache";
+
 const Gabrielaa = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
+
 interface LayoutProfileProps {
   children: React.ReactNode;
 }
+
 type Form = {
   id: number;
   name: string;
@@ -27,9 +29,11 @@ type Form = {
   email: string;
   role: string;
 };
+
 export default function HomeProfile() {
+  unstable_noStore()
   const router = useRouter();
-  const [auth, setAuth] = useState<string | false | JwtPayload>(false);
+  const [auth, setAuth] = useState<string | false | JwtPayload >(false);
   const [type, setType] = useState<string>("" as string);
   const [user, setUser] = useState<Form>({
     id: 0,
@@ -47,9 +51,9 @@ export default function HomeProfile() {
 
     checkAuth();
   }, [router]);
-
   useEffect(() => {
     if (auth) {
+      console.log(user)
       setUser(auth as Form);
     } else {
       notify({ status: "error", message: "you are not logged in" });
@@ -62,9 +66,9 @@ export default function HomeProfile() {
       backgroundSize: "cover",
       backgroundAttachment: "fixed",
     }}
-      className={`w-full h-full lg:w-screen lg:h-screen lg:overflow-y-hidden bg-black text-gray-700 relative flex flex-col justify-center items-center ${Gabrielaa.className} lg:flex-row lg:items-start`}
+      className={`w-full h-screen lg:w-screen lg:h-screen lg:overflow-y-hidden bg-black text-gray-700 relative flex flex-col  justify-center  items-center ${Gabrielaa.className} lg:flex-row lg:items-start`}
     >
-      <aside className="w-full h-full py-2 flex justify-around items-center gap-5 flex-row-reverse xl:hidden ">
+      <aside className="w-full h-full py-2 flex justify-center items-start gap-5 flex-row-reverse xl:hidden ">
         <div className="opacity-0">test</div>
         <h1 className="font-bold text-xl ">Reservations</h1>
         <DropdownMenuProfile username={user.name}>
@@ -102,24 +106,36 @@ export default function HomeProfile() {
       ">{user.name}</h1>
         <div className="flex flex-col justify-start py-5 items-center gap-5 w-full h-full">
           <SideItems
-            onClick={() => console.log("1")}
-            Icon={UserCircle}
-            title="Profile"
+            onClick={() => setType("")}
+            Icon={HomeIcon}
+            title="Home"
           />
           <SideItems
-            onClick={() => console.log("1")}
+            onClick={() => setType("trip")}
             Icon={MapPin}
             title="My Trips"
           />
           <SideItems
-            onClick={() => console.log("1")}
+            onClick={() => setType("activity")}
             Icon={Map}
             title="My Activities"
           />
+          <SideItems
+            onClick={() => Logout()}
+            Icon={ArrowBigLeftDash}
+            title="Logout"
+          />
         </div>
       </aside>
-      <section className="w-full h-full lg:w-[75%] lg:right-0 lg:h-full lg:overflow-y-scroll lg:absolute">
-        <Profile id={user.id} Type="Trip"/>
+      <section className="w-full h-full   lg:w-[75%] lg:right-0 lg:h-full lg:overflow-y-scroll lg:absolute">
+        {
+          user.id === 0 ? (
+            <div className="animate-pulse">loading...</div>
+          ) : (
+            <Profile id={user.id} Type={type} />
+          )
+        }
+      
       </section>
     </main>
   );

@@ -1,12 +1,8 @@
 "use client";
 import React from "react";
-
 import { IoLocationOutline } from "react-icons/io5";
-
-
 import SkeletonSlider from "@/components/SkeletonSlider";
 import ImagePrev from "@/components/costumeInputs/ImagePrev";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
@@ -14,7 +10,7 @@ interface Activity {
   id: number;
   title: string;
   pictures: string[];
-  priceShuttle: number;
+  priceShutlle: number;
   pricePrivate: number;
   description: string;
   place: string;
@@ -79,7 +75,8 @@ const Activites = () => {
         Activity.map((trip, index) => (
           <SwiperSlide
             key={trip.id}
-            className="min-h-[10rem] sm:min-h-[17rem] w-full relative cursor-pointer overflow-hidden rounded-xl  border border-gray-300/40 "
+            className="min-h-[10rem] sm:min-h-[17rem]
+            w-full relative cursor-pointer overflow-hidden rounded-xl  border border-gray-300/40 "
             onMouseEnter={() => {
               setHovered(trip.id);
             }}
@@ -91,7 +88,7 @@ const Activites = () => {
               id={trip.id}
               title={trip.title}
               pricePrivate={trip.pricePrivate}
-              priceShuttle={trip.priceShuttle}
+              priceShutlle={trip.priceShutlle}
               description={trip.description}
               place={trip.place}
               images={trip.pictures}

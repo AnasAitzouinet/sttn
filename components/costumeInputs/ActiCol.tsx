@@ -22,7 +22,8 @@ export type Data = {
   id: number;
   title: string;
   pictures: string[];
-  price: number;
+  priceShutlle: number;
+  pricePrivate: number; 
   description: string;
   place: string;
 };
@@ -41,7 +42,8 @@ function TripsCol({ row, Close }: Props) {
     id: row.original.id,
     title: row.original.title,
     pictures: row.original.pictures,
-    price: row.original.price,
+    priceShutlle: row.original.priceShutlle,
+    pricePrivate: row.original.pricePrivate,
     description: row.original.description,
     place: row.original.place,
   });
@@ -81,9 +83,18 @@ function TripsCol({ row, Close }: Props) {
           placeholder={`Price `}
           type="text"
           onChange={(e) => {
-            setForm({ ...form, price: parseInt(e.target.value) });
+            setForm({ ...form, priceShutlle: parseInt(e.target.value) });
           }}
-          value={form.price.toString()}
+          value={form.priceShutlle.toString()}
+          className="text-gray-100"
+        />
+        <Input
+          placeholder={`Price `}
+          type="text"
+          onChange={(e) => {
+            setForm({ ...form, pricePrivate: parseInt(e.target.value) });
+          }}
+          value={form.pricePrivate.toString()}
           className="text-gray-100"
         />
       </div>
@@ -168,7 +179,7 @@ const UpdateImage = ({ row }: Props) => {
       `https://gestionres-production.up.railway.app/Activity/${row.original.id}`,
       {
         method: "PUT",
-        headers:{
+        headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -179,7 +190,7 @@ const UpdateImage = ({ row }: Props) => {
     );
     if (res.ok) {
       console.log("updated");
-    }else{
+    } else {
       console.log(res);
     }
   };
@@ -206,12 +217,12 @@ const UpdateImage = ({ row }: Props) => {
       <div className="flex flex-col gap-2">
         <p>Add new images :</p>
         <Inputs type="file" onChange={handelImage} />
-      <button
-        type="submit"
-        className="bg-blue-700 text-white px-5 py-2 rounded-xl"
-      >
-        Update
-      </button>
+        <button
+          type="submit"
+          className="bg-blue-700 text-white px-5 py-2 rounded-xl"
+        >
+          Update
+        </button>
       </div>
     </form>
   );
@@ -243,8 +254,12 @@ export const columns: ColumnDef<Data>[] = [
     header: "Title",
   },
   {
-    accessorKey: "price",
-    header: "price",
+    accessorKey: "priceShutlle",
+    header: "price Shuttle",
+  },
+  {
+    accessorKey: "pricePrivate",
+    header: "price Private",
   },
   {
     accessorKey: "description",
@@ -259,7 +274,7 @@ export const columns: ColumnDef<Data>[] = [
     header: "Image",
     cell: ({ row }) => {
       const trip = row.original;
-      return (  
+      return (
         <div className="flex justify-center items-center">
           <img
             src={trip.pictures[0]}

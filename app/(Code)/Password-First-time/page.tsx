@@ -5,18 +5,28 @@ import { useSearchParams } from "next/navigation";
 import CardWrapper from "@/components/Card/CardWrapper";
 import { Button } from "@/components/ui/button";
 import { passwordUpdater } from "@/actions/password";
+import { useRouter } from "next/navigation";
+import { Toaster } from "react-hot-toast";
+import notify from "@/components/costumeInputs/Notify";
 
 export default function PWD() {
   const token = useSearchParams().get("token");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  console.log(token);
-
+  const router = useRouter()
   const onSubmits = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    passwordUpdater(token as string, password)
-  };
-  
+    passwordUpdater(token as string, password).then((res) => {
+      if (res && res.success) {
+        notify({ status: "succes", message: "Password updated" });
+        router.push('/')
+      } else {
+        notify({ status: "error", message: "Password not updated" });
+      }
+    });
+  }
+      
+
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-[#1C1C1C]">
       <CardWrapper
@@ -27,6 +37,7 @@ export default function PWD() {
         href="/"
         footer="Back to homepage"
       >
+        <Toaster />
         <form onSubmit={onSubmits} className="flex flex-col items-center space-y-4">
           <div className="flex flex-col space-y-2 w-full">
             <label htmlFor="pass">New Password :</label>

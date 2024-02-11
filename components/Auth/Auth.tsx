@@ -16,6 +16,9 @@ import { Toaster } from "react-hot-toast";
 import Loader from "../loader";
 import Cookies from "../ServerCompoents/Cookies";
 import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
+import Link from "next/link";
+
 interface Props {
   trigger: React.ReactNode;
 }
@@ -75,12 +78,10 @@ const SignIn = () => {
             options: {
               maxAge: 60 * 60 * 24,
               path: "/",
-              
             },
           })
-          router.push('/Profile');
-          console.log(await res.json());
-          return;
+          // router.push('/Profile');
+          window.location.href = "/Profile";
         } else {
           setLoading(false);
           notify({ message: "email or password are not correct", status: "error" });
@@ -111,10 +112,20 @@ const SignIn = () => {
         <Input
           placeholder="Password"
           type="password"
-          onChange={(e) => setForm({ ...form, password: e.target.value })}  
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
           className="text-white"
 
         />
+        <Button
+          variant={"link"}
+          className="text-sm font-medium text-start w-full flex items-center justify-start gap-1 text-gray-300"
+          asChild
+        >
+          <Link href={"/forgotPassword"}>
+            Forgot password?
+          </Link>
+        </Button>
+
         <button type="submit" className="bg-blue-900 hover:bg-blue-700 transition-all duration-500 text-white w-full py-2 rounded-full">
           Sign in
         </button>
@@ -220,9 +231,7 @@ const SignUp = () => {
               path: "/",
             },
           })
-          // router.refresh();
           window.location.reload();
-          console.log(await res.json());
           return;
         } else {
           setLoading(false);
@@ -257,33 +266,29 @@ const SignUp = () => {
               placeholder="Full Name"
               type="text"
               onChange={(e) => setForm({ ...form, FullName: e.target.value })}
-              className={`text-white ${
-                formError.FullName ? "border-red-500 italic text-red-500" : ""
-              }`}
+              className={`text-white ${formError.FullName ? "border-red-500 italic text-red-500" : ""
+                }`}
             />
             <Input
               placeholder="Email"
               type="email"
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className={`text-white ${
-                formError.email ? "border-red-500 italic text-red-500" : ""
-              }`}
+              className={`text-white ${formError.email ? "border-red-500 italic text-red-500" : ""
+                }`}
             />
             <Input
               placeholder="phone number"
               type="text"
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              className={`text-white ${
-                formError.phone ? "border-red-500 italic text-red-500" : ""
-              }`}
+              className={`text-white ${formError.phone ? "border-red-500 italic text-red-500" : ""
+                }`}
             />
             <Input
               placeholder="Password"
               type="password"
               onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className={`text-white ${
-                formError.password ? "border-red-500 italic text-red-500" : ""
-              }`}
+              className={`text-white ${formError.password ? "border-red-500 italic text-red-500" : ""
+                }`}
             />
             <Input
               placeholder="Confirm Password"
@@ -291,11 +296,10 @@ const SignUp = () => {
               onChange={(e) =>
                 setForm({ ...form, ConPassword: e.target.value })
               }
-              className={`text-white ${
-                formError.ConPassword
-                  ? "border-red-500 italic text-red-500"
-                  : ""
-              }`}
+              className={`text-white ${formError.ConPassword
+                ? "border-red-500 italic text-red-500"
+                : ""
+                }`}
             />
             <label className="flex justify-start gap-3 w-full px-2 items-center">
               <motion.input

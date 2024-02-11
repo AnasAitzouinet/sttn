@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import React from "react";
+import React, { useCallback } from "react";
 import Input from "../costumeInputs/Inputs";
 import Upload from "../costumeInputs/Upload";
 import { DialogClose } from "@radix-ui/react-dialog";
@@ -21,17 +21,20 @@ interface Props {
 type Form = {
   title: string;
   pictures: string[];
-  price: number;
-  description: string;
+  priceShuttle: number;
+  pricePrivate: number; description: string;
   city: string;
 };
 
 export default function NewTrip({ children }: Props) {
   const [images, setImages] = useState<File[]>([]);
+  const [valid, setValid] = useState<boolean>(false);
+  console.log(valid);
   const [form, setForm] = useState<Form>({
     title: "",
     description: "",
-    price: 0,
+    priceShuttle: 0,
+    pricePrivate: 0,
     city: "",
     pictures: [],
   });
@@ -42,7 +45,7 @@ export default function NewTrip({ children }: Props) {
     }
   };
 
-  const uploadImages = async (images: File[]) => {
+  const uploadImages = useCallback(async () => {
     const uploadPromises = images.map(async (image) => {
       const formData = new FormData();
       formData.append("file", image);
@@ -64,18 +67,22 @@ export default function NewTrip({ children }: Props) {
         return null;
       }
     });
-
-    return Promise.all(uploadPromises);
-  };
+    const urls = await Promise.all(uploadPromises);
+    return urls;
+  }, [images]);
 
   React.useEffect(() => {
-    if (images.length > 0) {
-      uploadImages(images).then((urls) => {
-        const filteredUrls = urls.filter((url) => url !== null) as string[];
-        setForm((prevForm : any) => ({
-          ...prevForm,
-          pictures: [...prevForm.pictures, ...filteredUrls],
-        }));
+    const imgs = uploadImages();
+    if (imgs) {
+      imgs.then((urls) => {
+        if (urls.length === 0) {
+          setValid(false);
+          return;
+        } else {
+          setValid(true);
+          setForm({ ...form, pictures: urls });
+          console.log(urls);
+        }
       });
     }
   }, [images]);
@@ -86,8 +93,10 @@ export default function NewTrip({ children }: Props) {
       form.title === "" ||
       form.description === "" ||
       form.city === "" ||
-      form.price === 0 ||
-      form.pictures.length === 0
+      form.pricePrivate === 0 ||
+      form.priceShuttle === 0 ||
+      form.pictures.length === 0 ||
+      valid === false
     ) {
       return;
     }
@@ -103,9 +112,20 @@ export default function NewTrip({ children }: Props) {
         }
       );
       if (res.ok) {
+        setForm({
+          title: "",
+          description: "",
+          priceShuttle: 0,
+          pricePrivate: 0,
+          city: "",
+          pictures: [],
+        });
+        setValid(false);
+        setImages([]);
         notify({ status: "success", message: "Trip Added Successfully" });
       } else {
         const errorResponse = await res.json();
+
         notify({ status: "error", message: errorResponse.message });
       }
     } catch (error) {
@@ -130,14 +150,25 @@ export default function NewTrip({ children }: Props) {
             className="border text-white  border-gray-300  px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
           />
           <label className="text-gray-200 text-md font-semibold">
-            Trip Price
+            Trip Price Shuttle
           </label>
           <Input
             onChange={(e) =>
-              setForm({ ...form, price: Number(e.target.value) })
+              setForm({ ...form, priceShuttle: Number(e.target.value) })
             }
             type="number"
-            placeholder="Trip Price"
+            placeholder="Trip Price Shuttle"
+            className="border text-white  border-gray-300  px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+          />
+          <label className="text-gray-200 text-md font-semibold">
+            Trip Price Private
+          </label>
+          <Input
+            onChange={(e) =>
+              setForm({ ...form, pricePrivate: Number(e.target.value) })
+            }
+            type="number"
+            placeholder="Trip Price Private"
             className="border text-white  border-gray-300  px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
           />
           <label className="text-gray-200 text-md font-semibold">
@@ -168,12 +199,41 @@ export default function NewTrip({ children }: Props) {
             />
             {/* <Upload onChange={handleImages} /> */}
           </label>
-          <DialogClose>
+          <DialogClose asChild
+            disabled={valid === false ? true : false}
+          >
             <button
+              disabled={valid === false ? true : false}
+
               className="bg-blue-600 text-white w-full py-2 rounded-xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               type="submit"
             >
-              save
+              {
+                valid === false ? (
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5  text-white text-center w-full"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    ></path>
+                  </svg>
+                ) : (
+                  "Add"
+                )
+              }
             </button>
           </DialogClose>
         </form>

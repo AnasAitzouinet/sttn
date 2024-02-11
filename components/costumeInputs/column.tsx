@@ -17,6 +17,12 @@ import {
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { sendConfirmationsStatus } from "@/lib/mail";
+import { unstable_noStore } from "next/cache";
+import { time } from "console";
+import { getUserPayments } from "@/actions";
+import { useCallback, useEffect, useState } from "react";
+import { set } from "date-fns";
 
 export type Trip = {
   id: number;
@@ -47,6 +53,8 @@ export type Data = {
     password: string;
     role: "CLIENT";
   };
+
+  paymentIntentId: string;
 };
 
 export type JsonData = Data[];
@@ -65,28 +73,89 @@ const deleteRes = async (id: number) => {
 };
 
 const ChangeStatue = async ({ id, statue }: { id: number; statue: string }) => {
-  const res = await fetch(
-    `https://gestionres-production.up.railway.app/ResTrip/${id}/updateStatue`,
-    {
-      method: "put",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(statue),
-    }
-  );
-  if (res.ok) {
-    const data = await res.json();
-    return data;
-  } else {
-    throw new Error(`HTTP error! status: ${res.status}`);
+  try {
+    unstable_noStore();
+    const res = await fetch(
+      `https://gestionres-production.up.railway.app/ResTrip/${id}/updateStatue`,
+      {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(statue),
+      }
+    );
+    return res;
+  }
+  catch (err) {
+    console.log(err)
   }
 };
 
+const Reservations = async (payment: Data) => {
+  const [userPayments, setUserPayments] = useState<Payment>();
+  const [paid, setPaid] = useState<boolean>(false);
+  const user = useCallback(async () => {
+    const data = await getUserPayments();
+    const userPayments = data.find(
+      (items) => items.reservationId === payment.id
+    );
+    setUserPayments(userPayments as any);
+  }, []);
+
+  useEffect(() => {
+    user();
+  }, [user]);
+
+  useEffect(() => {
+
+    if (userPayments?.stripePaymentIntentId === payment.paymentIntentId) {
+      setPaid(true);
+    }
+    else {
+      setPaid(false);
+    }
+  }, [userPayments]);
+
+  return { userPayments, paid };
+}
+
+type Payment = {
+  id: string;
+  userId: string;
+  amount: number;
+  stripeCustomerId: string | null;
+  stripePaymentIntentId: string | null;
+  stripePriceId: string | null;
+  reservationId: number | null;
+}
 export const columns: ColumnDef<Data>[] = [
   {
     accessorKey: "id",
     header: "Id",
+  },
+  {
+    accessorKey: "payment",
+    header: "Payment",
+    cell: async ({ row }) => {
+      unstable_noStore();
+      const payment = row.original;
+      const { userPayments, paid } = await Reservations(payment);
+      return (
+        <span>
+          {paid ? (
+            <span className="bg-red-600 text-white py-1 px-2 rounded-full">
+              Not paid
+            </span>
+          ) : (
+            <span className="bg-green-600 text-white py-1 px-2 rounded-full">
+              Paid
+            </span>
+          )}
+
+        </span>
+      );
+    },
   },
   {
     accessorKey: "statue",
@@ -147,7 +216,7 @@ export const columns: ColumnDef<Data>[] = [
     header: "User",
     cell: ({ row }) => {
       const user = row.original;
-       {
+      {
         return (
           <Dialog>
             <DialogTrigger>
@@ -315,6 +384,16 @@ export const columns: ColumnDef<Data>[] = [
             <DropdownMenuItem
               onClick={() => {
                 ChangeStatue({ id: payment.id, statue: "ACCEPTED" });
+                setTimeout(async () => {
+                  await sendConfirmationsStatus({
+                    email: payment.email,
+                    userId: payment.userSttn.id,
+                    status: "ACCEPTED",
+                    resID: payment.id,
+                    priceTag: payment.type === "private" ? payment.trip.pricePrivate : payment.trip.priceShuttle,
+                    img: payment.trip.img
+                  });
+                }, 1000);
               }}
               className="bg-green-900 text-white rounded-xl hover:bg-green-400"
             >
@@ -323,6 +402,17 @@ export const columns: ColumnDef<Data>[] = [
             <DropdownMenuItem
               onClick={() => {
                 ChangeStatue({ id: payment.id, statue: "NOT_ACCEPTED" });
+                setTimeout(async () => {
+                  await sendConfirmationsStatus({
+                    email: payment.email,
+                    userId: payment.userSttn.id,
+                    status: "ACCEPTED",
+                    resID: payment.id,
+                    priceTag: payment.type === "private" ? payment.trip.pricePrivate : payment.trip.priceShuttle,
+                    img: payment.trip.img
+
+                  });
+                }, 1000);
               }}
               className="bg-orange-700 text-white rounded-xl hover:bg-orange-400"
             >

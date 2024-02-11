@@ -14,7 +14,8 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 interface Props {
   images: string[];
   children: React.ReactNode;
-  priceShuttle: number;
+  priceShuttle?: number;
+  priceShutlle?: number;
   pricePrivate: number;
   description: string;
   city?: string;
@@ -34,6 +35,7 @@ export default function ImagePrev({
   title,
   type,
   place,
+  priceShutlle
 }: Props) {
   const [open, setOpen] = React.useState(false);
   return (
@@ -59,15 +61,11 @@ export default function ImagePrev({
       "
         >
           <h1 className="text-3xl text-start font-bold py-2">{title}</h1>
-          <h1 className="text-xl "><span className="text-emerald-500">{priceShuttle}500 Dh</span>  - Shuttle</h1>
-          <h1 className="text-xl ">price Private :{pricePrivate} Dh</h1>
-          {/* <div className="flex ">
-            <Star className="fill-yellow-300 text-yellow-300 w-4 h-4" />
-            <Star className="fill-yellow-300 text-yellow-300 w-4 h-4" />
-            <Star className="fill-yellow-300 text-yellow-300 w-4 h-4" />
-            <Star className="fill-yellow-300 text-yellow-300 w-4 h-4" />
-            <Star className="text-yellow-300 w-4 h-4" />
-          </div> */}
+          <h1 className="text-xl "><span className="text-emerald-500">{
+            type === "activity" ? priceShutlle : priceShuttle
+          } Dh</span>  - Shuttle</h1>
+          <h1 className="text-xl "><span className="text-emerald-500">{pricePrivate} Dh</span>  - Private</h1>
+          
           <div className="py-2">
             <div>
               <h2 className="py-3">{city || place}</h2>
