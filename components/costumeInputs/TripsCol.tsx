@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import Input from "./Inputs";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { Input as Inputs} from "@/components/ui/input"
+import { Input as Inputs } from "@/components/ui/input"
 
 export type Data = {
   id: number;
@@ -89,7 +89,7 @@ function TripsCol({ row, Close }: Props) {
           value={form.priceShuttle.toString()}
           className="text-gray-100"
         />
-         <Input
+        <Input
           placeholder={`Price `}
           type="text"
           onChange={(e) => {
@@ -218,12 +218,12 @@ const UpdateImage = ({ row }: Props) => {
       <div className="flex flex-col gap-2">
         <p>Add new images :</p>
         <Inputs type="file" onChange={handelImage} />
-      <button
-        type="submit"
-        className="bg-blue-700 text-white px-5 py-2 rounded-xl"
-      >
-        Update
-      </button>
+        <button
+          type="submit"
+          className="bg-blue-700 text-white px-5 py-2 rounded-xl"
+        >
+          Update
+        </button>
       </div>
     </form>
   );
@@ -275,10 +275,11 @@ export const columns: ColumnDef<Data>[] = [
     header: "Image",
     cell: ({ row }) => {
       const trip = row.original;
+
       return (
         <div className="flex justify-center items-center">
           <img
-            src={trip.pictures[0]}
+            src={trip?.pictures[0]}
             alt={trip.title}
             className="w-20 h-20 rounded-xl "
           />

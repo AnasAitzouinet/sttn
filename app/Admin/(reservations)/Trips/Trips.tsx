@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Data, columns, Trip } from "@/components/costumeInputs/column";
 import { DataTable } from "@/components/costumeInputs/data-table";
 import SearchBar from "@/components/SearchBar";
@@ -25,17 +25,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ExportToCsv } from "@/components/ExportCsv/ExportToCsv";
-import { prisma } from "@/lib/Prisma";
-import { get } from "http";
-import { getUserPayments } from "@/actions";
+
+
 async function getData(): Promise<Data[]> {
-  const res = await fetch(
-    "https://gestionres-production.up.railway.app/ResTrip/",
-    {
-      method: "get",
-      cache: "no-store",
-    }
-  );
+  const res = await fetch("https://gestionres-production.up.railway.app/ResTrip/", {
+    method: "get",
+    cache: "no-store",
+  });
   if (res.ok) {
     const data = await res.json();
     return data;
@@ -45,93 +41,80 @@ async function getData(): Promise<Data[]> {
 }
 
 const Admin = () => {
-  const [data, setData] = React.useState<Data[]>([]);
-  const [filtredData, setFiltredData] = React.useState<Data[]>([]); // [
-  const [filter, setFilter] = React.useState("");
-  const [date, setDate] = React.useState<DateRange | undefined>({
+  const [data, setData] = useState<Data[]>([]);
+  const [filter, setFilter] = useState("");
+  const [filteredData, setFilteredData] = useState<Data[]>([]);
+
+  const [date, setDate] = useState<DateRange | undefined>({
     from: undefined,
     to: undefined,
   });
 
- 
   useEffect(() => {
     getData().then((data) => {
       setData(data);
+      setFilteredData(data); // Initialize filteredData with the original data
+
     });
+  }, []);
 
-  }, [filtredData]);
- 
-  const handelSelect = (value: string) => {
-    setFilter(value);
-  };
+  useEffect(() => {
+    const filteredData = applyFilters(data, filter, date);
+    setFilteredData(filteredData); // Update the filteredData state
+  }, [filter, date]);
 
-  React.useEffect(() => {
-    setFiltredData(data);
+  const applyFilters = (data: Data[], filter: string, dateRange: DateRange | undefined) => {
+    let filteredData = [...data];
+
     switch (filter) {
       case "latestR":
-        setFiltredData((prev) => [...prev.sort((a, b) => b.id - a.id)]);
+        filteredData = filteredData.sort((a, b) => b.id - a.id);
         break;
       case "oldestR":
-        setFiltredData((prev) => [...prev.sort((a, b) => a.id - b.id)]);
+        filteredData = [...filteredData.sort((a, b) => a.id - b.id)];
         break;
       case "MPeople":
-        setFiltredData((prev) => [
-          ...prev.sort(
-            (a, b) => parseInt(b.numberOfPersons) - parseInt(a.numberOfPersons)
-          ),
-        ]);
+        filteredData = [...filteredData.sort((a, b) => parseInt(b.numberOfPersons) - parseInt(a.numberOfPersons))];
         break;
       case "LPeople":
-        setFiltredData((prev) => [
-          ...prev.sort(
-            (a, b) => parseInt(a.numberOfPersons) - parseInt(b.numberOfPersons)
-          ),
-        ]);
+        filteredData = [...filteredData.sort((a, b) => parseInt(a.numberOfPersons) - parseInt(b.numberOfPersons))];
         break;
       case "MPricePrivate":
-        setFiltredData((prev) => [
-          ...prev.sort((a, b) => b.trip.pricePrivate - a.trip.pricePrivate),
-        ]);
+        filteredData = [...filteredData.sort((a, b) => parseInt(b.trip.pricePrivate.toString()) - parseInt(a.trip.pricePrivate.toString()))];
         break;
       case "LPricePrivate":
-        setFiltredData((prev) => [
-          ...prev.sort((a, b) => a.trip.pricePrivate - b.trip.pricePrivate),
-        ]);
+        filteredData = [...filteredData.sort((a, b) => parseInt(a.trip.pricePrivate.toString()) - parseInt(b.trip.pricePrivate.toString()))];
         break;
       case "MPriceShuttle":
-        setFiltredData((prev) => [
-          ...prev.sort((a, b) => b.trip.priceShuttle - a.trip.priceShuttle),
-        ]);
+        filteredData = [...filteredData.sort((a, b) => parseInt(b.trip.priceShuttle.toString()) - parseInt(a.trip.priceShuttle.toString()))];
         break;
       case "LPriceShuttle":
-        setFiltredData((prev) => [
-          ...prev.sort((a, b) => a.trip.priceShuttle - b.trip.priceShuttle),
-        ]);
+        filteredData = [...filteredData.sort((a, b) => parseInt(a.trip.priceShuttle.toString()) - parseInt(b.trip.priceShuttle.toString()))];
         break;
       case "Shuttle":
-        setFiltredData((prev) => [
-          ...prev.filter((item) => item.type === "shuttle"),
-        ]);
+        filteredData = filteredData.filter((item) => item.type === "shuttle");
         break;
       case "Private":
-        setFiltredData((prev) => [
-          ...prev.filter((item) => item.type === "private"),
-        ]);
+        filteredData = filteredData.filter((item) => item.type === "private");
         break;
       default:
-        setFiltredData(data);
+        break;
     }
-    if (date?.from && date?.to) {
-      setFiltredData((prev) => [
-        ...prev.filter(
-          (item) =>
-            new Date(item.dateFrom) >= date.from! &&
-            new Date(item.dateFrom) <= date.to!
-        ),
-      ]);
-    }
-  }, [filter, data, date?.from, date?.to]);
 
+    if (dateRange?.from && dateRange?.to) {
+      filteredData = filteredData.filter(
+        (item) =>
+          new Date(item.dateFrom) >= dateRange.from! &&
+          new Date(item.dateFrom) <= dateRange.to!
+      );
+    }
+
+    return filteredData;
+  };
+
+  const handleSelect = (value: string) => {
+    setFilter(value);
+  };
 
   return (
     <section className="bg-[#ebe9e9]">
@@ -155,16 +138,16 @@ const Admin = () => {
             </span>
           </AdminRes>
           <div className="flex gap-5 flex-row-reverse">
-            <span 
-            onClick={
-              ()=>{
-                ExportToCsv({data:data, filename:"ReservationsTrips"})
+            <span
+              onClick={
+                () => {
+                  ExportToCsv({ data: data, filename: "ReservationsTrips" })
+                }
               }
-            }
-            className="cursor-pointer bg-green-800 rounded-xl px-10 text-white font-semibold  py-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+              className="cursor-pointer bg-green-800 rounded-xl px-10 text-white font-semibold  py-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
               Export to Csv
             </span>
-            <Select onValueChange={handelSelect}>
+            <Select onValueChange={handleSelect}>
               <SelectTrigger className="w-[180px] rounded-xl">
                 <SelectValue placeholder="Filter by" />
               </SelectTrigger>
@@ -197,7 +180,6 @@ const Admin = () => {
                   <SelectItem className="rounded-xl" value="Shuttle">
                     Type Shuttle
                   </SelectItem>
-
                   <SelectItem className="rounded-xl" value="Private">
                     Type Private
                   </SelectItem>
@@ -245,7 +227,7 @@ const Admin = () => {
         </div>
 
         <div className="w-full">
-          <DataTable columns={columns} data={filtredData}  />
+          <DataTable columns={columns} data={filteredData} />
         </div>
       </div>
     </section>

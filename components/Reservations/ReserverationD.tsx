@@ -230,7 +230,6 @@ export default function ReserverationD({
               </h2>
               <div className="flex gap-2">
                 <div
-                  onClick={() => setTypes("arrival")}
                   className={`px-2 py-1 border  rounded-xl cursor-pointer transition-all duration-300 ease-in-out
                 ${
                   type === "arrival"
@@ -242,7 +241,6 @@ export default function ReserverationD({
                   Arrival
                 </div>
                 <div
-                  onClick={() => setTypes("departure")}
                   className={`px-2 py-1 border  rounded-xl cursor-pointer transition-all duration-300 ease-in-out
                 ${
                   type === "departure"
@@ -289,6 +287,15 @@ export default function ReserverationD({
                       value={form.phone}
                       onChange={(e) =>
                         setForm({ ...form, phone: e.target.value })
+                      }
+                    />
+                    <Input
+                      type="text"
+                      placeholder="Place"
+                      className="text-white"
+                      value={form.place}
+                      onChange={(e) =>
+                        setForm({ ...form, place: e.target.value })
                       }
                     />
                   </aside>

@@ -143,10 +143,6 @@ export default function Home() {
                     Home
                   </a>
                 </li>
-
-                <li>
-                  <a href="/Who-we-are">Who we are ?</a>
-                </li>
                 <li>
                   <a href="/Destinations">Destinations</a>
                 </li>
@@ -154,11 +150,25 @@ export default function Home() {
                   <a href="/Contact-us">Contact us</a>
                 </li>
                 <div className="border w-3/4 border-gray-900"></div>
-                <Auth>
-                  <li>
-                    Log in
-                  </li>
-                </Auth>
+                {auth ? (
+                  <Avatar
+                    onClick={() => router.push("/Profile")}
+                    className="cursor-pointer"
+                  >
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback className="capitalize">{
+                      //@ts-ignore
+                      auth.name.split(" ").map((name) => name[0]).join("")
+                    }</AvatarFallback>
+                  </Avatar>
+                ) : (
+                  <Auth>
+                    <li>
+                      Log in
+                    </li>
+                  </Auth>
+                )}
+
               </ul>
             </div>
           </motion.div>
@@ -177,7 +187,6 @@ export default function Home() {
             <ul className="text-white flex items-center gap-5 font-extralight">
               <NavLink name="Home" paths="/" />
               <NavLink name="Destinations" paths="/Destinations" />
-              <NavLink name="Who we are ?" paths="/Who-we-are" />
               <NavLink name="Contact us" paths="Contact-us" />
               {auth ? (
                 <Avatar
@@ -194,7 +203,7 @@ export default function Home() {
                 <Auth>
                   {/* <NavLink name="Account" /> */}
                   <li>
-                    <RiAccountCircleFill  className="w-12 h-12 " />
+                    <RiAccountCircleFill className="w-12 h-12 " />
                   </li>
                 </Auth>
               )}

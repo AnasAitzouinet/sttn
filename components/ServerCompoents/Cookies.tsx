@@ -10,25 +10,33 @@ interface CookiesProps {
     path: string;
   };
 }
+
 const Cookies = (CookiesProps: CookiesProps) => {
-  try{
+  try {
     const cookieStore = cookies();
-    const value = JSON.stringify(CookiesProps.value)
-  
-    const secretKey = process.env.SECRET_KEY as string;
+    const value = JSON.stringify(CookiesProps.value);
+
+    const secretKey = process.env.SECRET_KEY;
+    if (!secretKey) {
+      throw new Error('SECRET_KEY is not set');
+    }
+
     const securedValue = jwt.sign(value, secretKey);
-  
+
     cookieStore.set(
-      CookiesProps.name, 
+      CookiesProps.name,
       securedValue, {
       maxAge: CookiesProps.options.maxAge,
       path: CookiesProps.options.path,
-      secure: process.env.NODE_ENV === 'production' ? true : false,
-      sameSite:'strict'
-    });
-    console.log('cookie set')
-  }catch(err){
-    console.log(err);
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    }
+    );
+
+    console.log('cookie set');
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
 };
 

@@ -91,10 +91,6 @@ const Destinations = () => {
                                         Home
                                     </a>
                                 </li>
-
-                                <li>
-                                    <a href="/Who-we-are">Who we are ?</a>
-                                </li>
                                 <li>
                                     <a href="/Destinations">Destinations</a>
                                 </li>
@@ -123,7 +119,6 @@ const Destinations = () => {
                         <ul className="text-white flex items-center gap-5 font-extralight">
                             <NavLink name="Home" paths="/" />
                             <NavLink name="Destinations" paths="/Destinations" />
-                            <NavLink name="Who we are ?" paths="/Who-we-are" />
                             <NavLink name="Contact us" paths="Contact-us" />
                             {auth ? (
                                 <Avatar

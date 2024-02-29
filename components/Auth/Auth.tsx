@@ -81,7 +81,7 @@ const SignIn = () => {
             },
           })
           // router.push('/Profile');
-          window.location.href = "/Profile";
+          window.location.reload();
         } else {
           setLoading(false);
           notify({ message: "email or password are not correct", status: "error" });

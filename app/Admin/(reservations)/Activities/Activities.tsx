@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Data, columns } from "@/components/costumeInputs/columnAct";
 import { DataTable } from "@/components/costumeInputs/data-table";
 import SearchBar from "@/components/SearchBar";
@@ -42,89 +42,80 @@ async function getData(): Promise<Data[]> {
     }
 }
 const Activities = () => {
-    const [data, setData] = React.useState<Data[]>([]);
-    const [filtredData, setFiltredData] = React.useState<Data[]>([]); // [
-    const [filter, setFilter] = React.useState("");
-    const [date, setDate] = React.useState<DateRange | undefined>({
-        from: undefined,
-        to: undefined,
+    const [data, setData] = useState<Data[]>([]);
+    const [filter, setFilter] = useState("");
+    const [filteredData, setFilteredData] = useState<Data[]>([]);
+  
+    const [date, setDate] = useState<DateRange | undefined>({
+      from: undefined,
+      to: undefined,
     });
-
+  
     useEffect(() => {
-        getData().then((data) => {
-            setData(data);
-        });
-    }, [filtredData]);
-    const handelSelect = (value: string) => {
-        setFilter(value);
+      getData().then((data) => {
+        setData(data);
+        setFilteredData(data); // Initialize filteredData with the original data
+  
+      });
+    }, []);
+  
+    useEffect(() => {
+      const filteredData = applyFilters(data, filter, date);
+      setFilteredData(filteredData); // Update the filteredData state
+    }, [filter, date]);
+  
+    const applyFilters = (data: Data[], filter: string, dateRange: DateRange | undefined) => {
+      let filteredData = [...data];
+  
+      switch (filter) {
+        case "latestR":
+          filteredData = filteredData.sort((a, b) => b.id - a.id);
+          break;
+        case "oldestR":
+          filteredData = [...filteredData.sort((a, b) => a.id - b.id)];
+          break;
+        case "MPeople":
+          filteredData = [...filteredData.sort((a, b) => parseInt(b.nbrPerson) - parseInt(a.nbrPerson))];
+          break;
+        case "LPeople":
+          filteredData = [...filteredData.sort((a, b) => parseInt(a.nbrPerson) - parseInt(b.nbrPerson))];
+          break;
+        case "MPricePrivate":
+          filteredData = [...filteredData.sort((a, b) => parseInt(b.activity.pricePrivate.toString()) - parseInt(a.activity.pricePrivate.toString()))];
+          break;
+        case "LPricePrivate":
+          filteredData = [...filteredData.sort((a, b) => parseInt(a.activity.pricePrivate.toString()) - parseInt(b.activity.pricePrivate.toString()))];
+          break;
+        case "MpriceShutlle":
+          filteredData = [...filteredData.sort((a, b) => parseInt(b.activity.priceShutlle.toString()) - parseInt(a.activity.priceShutlle.toString()))];
+          break;
+        case "LpriceShutlle":
+          filteredData = [...filteredData.sort((a, b) => parseInt(a.activity.priceShutlle.toString()) - parseInt(b.activity.priceShutlle.toString()))];
+          break;
+        case "Shuttle":
+          filteredData = filteredData.filter((item) => item.type === "shuttle");
+          break;
+        case "Private":
+          filteredData = filteredData.filter((item) => item.type === "private");
+          break;
+        default:
+          break;
+      }
+  
+      if (dateRange?.from && dateRange?.to) {
+        filteredData = filteredData.filter(
+          (item) =>
+            new Date(item.date) >= dateRange.from! &&
+            new Date(item.date) <= dateRange.to!
+        );
+      }
+  
+      return filteredData;
     };
-
-    React.useEffect(() => {
-        setFiltredData(data);
-        switch (filter) {
-            case "latestR":
-                setFiltredData((prev) => [...prev.sort((a, b) => b.id - a.id)]);
-                break;
-            case "oldestR":
-                setFiltredData((prev) => [...prev.sort((a, b) => a.id - b.id)]);
-                break;
-            case "MPeople":
-                setFiltredData((prev) => [
-                    ...prev.sort(
-                        (a, b) => parseInt(b.nbrPerson) - parseInt(a.nbrPerson)
-                    ),
-                ]);
-                break;
-            case "LPeople":
-                setFiltredData((prev) => [
-                    ...prev.sort(
-                        (a, b) => parseInt(a.nbrPerson) - parseInt(b.nbrPerson)
-                    ),
-                ]);
-                break;
-            case "MPricePrivate":
-                setFiltredData((prev) => [
-                    ...prev.sort((a, b) => b.activity.pricePrivate - a.activity.pricePrivate),
-                ]);
-                break;
-            case "LPricePrivate":
-                setFiltredData((prev) => [
-                    ...prev.sort((a, b) => a.activity.pricePrivate - b.activity.pricePrivate),
-                ]);
-                break;
-            case "MPriceShuttle":
-                setFiltredData((prev) => [
-                    ...prev.sort((a, b) => b.activity.priceShutlle - a.activity.priceShutlle),
-                ]);
-                break;
-            case "LPriceShuttle":
-                setFiltredData((prev) => [
-                    ...prev.sort((a, b) => a.activity.priceShutlle - b.activity.priceShutlle),
-                ]);
-                break;
-            case "Shuttle":
-                setFiltredData((prev) => [
-                    ...prev.filter((item) => item.type === "shuttle"),
-                ]);
-                break;
-            case "Private":
-                setFiltredData((prev) => [
-                    ...prev.filter((item) => item.type === "private"),
-                ]);
-                break;
-            default:
-                setFiltredData(data);
-        }
-        if (date?.from && date?.to) {
-            setFiltredData((prev) => [
-                ...prev.filter(
-                    (item) =>
-                        new Date(item.date) >= date.from! &&
-                        new Date(item.date) <= date.to!
-                ),
-            ]);
-        }
-    }, [filter, data, date?.from, date?.to]);
+  
+    const handleSelect = (value: string) => {
+      setFilter(value);
+    };
     return (
         <section className="bg-[#ebe9e9]">
             <header className="h-full w-full">
@@ -157,7 +148,7 @@ const Activities = () => {
                             className="cursor-pointer bg-green-800 rounded-xl px-10 text-white font-semibold  py-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
                             Export to Csv
                         </span>
-                        <Select onValueChange={handelSelect}>
+                        <Select onValueChange={handleSelect}>
                             <SelectTrigger className="w-[180px] rounded-xl">
                                 <SelectValue placeholder="Filter by" />
                             </SelectTrigger>
@@ -181,10 +172,10 @@ const Activities = () => {
                                     <SelectItem className="rounded-xl" value="LPricePrivate">
                                         Less Price in Private
                                     </SelectItem>
-                                    <SelectItem className="rounded-xl" value="MPriceShuttle">
+                                    <SelectItem className="rounded-xl" value="MpriceShutlle">
                                         Most Price in Shuttle
                                     </SelectItem>
-                                    <SelectItem className="rounded-xl" value="LPriceShuttle">
+                                    <SelectItem className="rounded-xl" value="LpriceShutlle">
                                         Less Price in Shuttle
                                     </SelectItem>
                                     <SelectItem className="rounded-xl" value="Shuttle">
@@ -237,7 +228,7 @@ const Activities = () => {
                     </div>
                 </div>
                 <div className="w-full">
-                    <DataTable columns={columns} data={filtredData} />
+                    <DataTable columns={columns} data={filteredData} />
                 </div>
             </div>
         </section>

@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import { Poppins } from "next/font/google";
 import { DropdownMenuProfile } from "@/components/costumeInputs/CostumeDropdownMenu";
-import { UserCircle, MapPin, Map , ArrowBigLeftDash , HomeIcon } from "lucide-react";
+import { UserCircle, MapPin, Map, ArrowBigLeftDash, HomeIcon } from "lucide-react";
 import notify from "@/components/costumeInputs/Notify";
 import Profile from "./Profile";
 import Logout from "@/components/ServerCompoents/Logout";
@@ -33,7 +33,7 @@ type Form = {
 export default function HomeProfile() {
   unstable_noStore()
   const router = useRouter();
-  const [auth, setAuth] = useState<string | false | JwtPayload >(false);
+  const [auth, setAuth] = useState<string | false | JwtPayload>(false);
   const [type, setType] = useState<string>("" as string);
   const [user, setUser] = useState<Form>({
     id: 0,
@@ -61,11 +61,11 @@ export default function HomeProfile() {
   }, [auth]);
   return (
     <main
-    style={{
-      backgroundImage: "url('/2.jpg')",
-      backgroundSize: "cover",
-      backgroundAttachment: "fixed",
-    }}
+      style={{
+        backgroundImage: "url('/2.jpg')",
+        backgroundSize: "cover",
+        backgroundAttachment: "fixed",
+      }}
       className={`w-full h-screen lg:w-screen lg:h-screen lg:overflow-y-hidden bg-black text-gray-700 relative flex flex-col  justify-center  items-center ${Gabrielaa.className} lg:flex-row lg:items-start`}
     >
       <aside className="w-full h-full py-2 flex justify-center items-start gap-5 flex-row-reverse xl:hidden ">
@@ -121,7 +121,11 @@ export default function HomeProfile() {
             title="My Activities"
           />
           <SideItems
-            onClick={() => Logout()}
+            onClick={() => {
+
+              Logout()
+              window.location.href = "/";
+            }}
             Icon={ArrowBigLeftDash}
             title="Logout"
           />
@@ -135,7 +139,7 @@ export default function HomeProfile() {
             <Profile id={user.id} Type={type} />
           )
         }
-      
+
       </section>
     </main>
   );

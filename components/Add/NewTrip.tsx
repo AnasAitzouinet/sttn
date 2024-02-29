@@ -29,8 +29,7 @@ type Form = {
 export default function NewTrip({ children }: Props) {
   const [images, setImages] = useState<File[]>([]);
   const [valid, setValid] = useState<boolean>(false);
-  console.log(valid);
-  const [form, setForm] = useState<Form>({
+   const [form, setForm] = useState<Form>({
     title: "",
     description: "",
     priceShuttle: 0,
