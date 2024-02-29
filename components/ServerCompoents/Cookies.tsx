@@ -29,7 +29,7 @@ const Cookies = (CookiesProps: CookiesProps) => {
       maxAge: CookiesProps.options.maxAge,
       path: CookiesProps.options.path,
       secure: true,
-      sameSite: 'none',
+      sameSite: 'strict',
       httpOnly: true
     }
     );
