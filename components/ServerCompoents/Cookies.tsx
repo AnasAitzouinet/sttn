@@ -29,7 +29,7 @@ const Cookies = (CookiesProps: CookiesProps) => {
       maxAge: CookiesProps.options.maxAge,
       path: CookiesProps.options.path,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax'
+      sameSite: 'none'
     }
     );
 
