@@ -30,11 +30,11 @@ const Cookies = async (CookiesProps: CookiesProps) => {
       maxAge: CookiesProps.options.maxAge,
       path: CookiesProps.options.path,
       secure: true,
-      sameSite: 'lax',
+      sameSite: 'none',
       httpOnly: true
     }
     );
-    
+
     if(cookieStore.get(CookiesProps.name)){
       return console.log('cookie set');
     }else{
