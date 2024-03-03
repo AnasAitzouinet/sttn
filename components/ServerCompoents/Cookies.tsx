@@ -1,6 +1,7 @@
 "use server";
- import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { cookies } from "next/headers";
+import { setCookie } from "nookies";
 
 interface CookiesProps {
   name: string;
@@ -11,7 +12,7 @@ interface CookiesProps {
   };
 }
 
-const Cookies = (CookiesProps: CookiesProps) => {
+const Cookies = async (CookiesProps: CookiesProps) => {
   try {
     const cookieStore = cookies();
     const value = JSON.stringify(CookiesProps.value);
@@ -20,7 +21,7 @@ const Cookies = (CookiesProps: CookiesProps) => {
     if (!secretKey) {
       throw new Error('SECRET_KEY is not set');
     }
-
+    console.log(CookiesProps)
     const securedValue = jwt.sign(value, secretKey);
 
     cookieStore.set(
@@ -34,7 +35,7 @@ const Cookies = (CookiesProps: CookiesProps) => {
     }
     );
 
-    console.log('cookie set');
+
   } catch (err) {
     console.error(err);
     throw err;

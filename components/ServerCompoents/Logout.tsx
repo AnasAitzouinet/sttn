@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 
 const Logout = () => {
   const cookiesStore = cookies();
-  cookiesStore.delete("token")
+  cookiesStore.set("token",'')
   if (typeof window !== "undefined") {
     window.location.href = "/";
   }
