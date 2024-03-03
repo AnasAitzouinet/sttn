@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
  const CheckCookie = () => {
     const cookiesStore = cookies();
     const user = cookiesStore.get("Pwd");
+    console.log(user);
     if (!user) return false;
     const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY as string;
     const decoded = jwt.verify(user.value, secretKey);
