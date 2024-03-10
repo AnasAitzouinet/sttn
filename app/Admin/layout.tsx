@@ -5,10 +5,11 @@ import { motion } from "framer-motion";
 import Burger from "@/components/icons/burger";
 import Xmark from "@/components/icons/x-mark";
 import Users from "@/components/icons/Users";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+
 import CheckAuth from "@/components/ServerCompoents/CheckAuth";
-import { JwtPayload } from "jsonwebtoken";
-import Contacts from "./Contacts/page";
+
+
 interface layoutProps {
   children: React.ReactNode;
 }
@@ -17,15 +18,13 @@ interface layoutProps {
 const LayoutAdmin = ({ children }: layoutProps) => {
   const [opened, setOpen] = useState(false);
   const router = useRouter();
-  const [auth, setAuth] = useState<string | false | JwtPayload>(false);
   useEffect(() => {
-    const checkAuth = async () => {
-      const result = await CheckAuth();
-      console.log(result);
-      if (result === false) router.push("/");
-      if (result && (result as JwtPayload).role !== "ADMIN") router.push("/");
-    };
-    checkAuth();
+    CheckAuth().then((res) => {
+      console.log(res);
+      if (res && res.role !== "ADMIN") {
+        router.replace("/");
+      }
+    });
   }, []);
   return (
     <main className="relative ">

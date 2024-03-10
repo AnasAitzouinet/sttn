@@ -1,35 +1,46 @@
-import { NextResponse } from 'next/server'
-import { NextRequest } from 'next/server'
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import authConfig from "./auth.config";
+import NextAuth from "next-auth";
+import {
+  DEFAULT_LOGIN_REDIRECT,
+  apiAuthPrefix,
+  privateRoutes,
+  publicRoutes,
+  DEFAULT_LOGOUT_REDIRECT
+} from "./routes";
 
-export function middleware(request: NextRequest) {
- 
+ const { auth } = NextAuth(authConfig);
 
 
-  let cookie = request.cookies.get('token')
-  if (!cookie) {
+
+export default auth( (req) => {
+  const { nextUrl } = req
+  const isLogged = !!req.auth
+  const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
+  const isPrivateRoute = privateRoutes.includes(nextUrl.pathname)
+  const isAdmin = nextUrl.pathname.startsWith('/Admin')
+  const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
+
+  if (isApiAuthRoute) {
     return
   }
-  let token = jwt.decode(cookie?.value)
- 
-  if (request.url.startsWith('/Profile')) {
-    if (cookie) {
-      return NextResponse.next()
-    } else {
-      return NextResponse.redirect(new URL('/', request.url))
-    }
-  }
-  if (request.url.startsWith('/Admin') ) {
-    if (!token || typeof token !== 'object' || token.role !== 'admin') {
-      console.log('redirecting')
-      return Response.redirect(new URL('/', request.url));
-    } else {
-      return NextResponse.next();
-    }
-  }
-  
-}
 
+  if(isPrivateRoute){
+    if(!isLogged){
+      return Response.redirect(new URL(DEFAULT_LOGOUT_REDIRECT, nextUrl))
+    }
+    return 
+  }
+  if(isAdmin){
+    if(!isLogged){
+      return Response.redirect(new URL(DEFAULT_LOGOUT_REDIRECT, nextUrl))
+    }else if(req.auth  && req.auth.user.role == 'admin'){
+      console.log('not admin')
+    }
+  }
+
+
+  return 
+})
 export const config = {
   matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
 };

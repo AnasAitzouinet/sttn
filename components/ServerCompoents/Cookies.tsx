@@ -1,7 +1,6 @@
 "use server";
 import jwt from 'jsonwebtoken';
 import { cookies } from "next/headers";
-import { setCookie } from "nookies";
 
 interface CookiesProps {
   name: string;

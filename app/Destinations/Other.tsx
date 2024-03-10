@@ -1,7 +1,5 @@
 "use client";
 import React from "react";
-import { useKeenSlider } from "keen-slider/react";
-import "keen-slider/keen-slider.min.css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Image from "next/image";
 // Import Swiper styles

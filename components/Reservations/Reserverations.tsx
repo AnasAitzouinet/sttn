@@ -97,22 +97,22 @@ const Reserverations = ({
 
   const [type, setType] = useState("shuttle"); // Added state
 
-  useEffect(() => {
+  React.useEffect(() => {
     const Auth = async () => {
-      const res = await CheckAuth();
-      if (res && typeof res !== "string") {
+      const resultat = await CheckAuth();
+      if (!resultat) return;
+      else {
+        setForm({
+          ...form,
+          email: resultat.email as string
+          , FullName: resultat.name as string
+          , userId: parseInt(resultat.id as string)
+        });
         setLoggedIn(true);
-        return setForm((prevForm) => ({
-          ...prevForm,
-          email: res.email,
-          phone: res.phone_number,
-          FullName: res.name,
-          userId: res.id,
-        }));
       }
     };
     Auth();
-  }, []); // Removed dependencies
+  }, []);
 
   const handleSelectChange = (value: string) => {
     setForm({ ...form, language: value });
@@ -514,22 +514,22 @@ const ReserverationsActi = ({
   const [loading, setLoading] = useState(false); // Added state
   const [LoggedIn, setLoggedIn] = useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const Auth = async () => {
-      const res = await CheckAuth();
-      if (res && typeof res !== "string") {
+      const resultat = await CheckAuth();
+      if (!resultat) return;
+      else {
+        setForm({
+          ...form,
+          email: resultat.email as string
+          , FullName: resultat.name as string
+          , userId: parseInt(resultat.id as string)
+        });
         setLoggedIn(true);
-        return setForm((prevForm) => ({
-          ...prevForm,
-          email: res.email,
-          phone: res.phone_number,
-          FullName: res.name,
-          userId: res.id,
-        }));
       }
     };
     Auth();
-  }, []); // Removed dependencies
+  }, []);// Removed dependencies
 
   const handleSelectChange = (value: string) => {
     setForm({ ...form, language: value });

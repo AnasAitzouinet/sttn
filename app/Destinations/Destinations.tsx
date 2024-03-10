@@ -15,19 +15,35 @@ import { AiOutlineClose } from "react-icons/ai";
 import { motion } from "framer-motion";
 import { RiAccountCircleFill } from "react-icons/ri";
 
+interface User {
+    id: string | undefined;
+    name: string | null | undefined;
+    email: string | null | undefined;
+}
+
 const Destinations = () => {
-    const [auth, setAuth] = useState<string | false | JwtPayload>(false);
     const [open, setOpen] = useState(false);
 
     const router = useRouter();
+    const [auth, setAuth] = useState<User | false>({
+        id: "",
+        name: "",
+        email: "",
+    });
     useEffect(() => {
         const checkAuth = async () => {
             const result = await CheckAuth();
-            setAuth(result);
+
+            if (!result && result === undefined) {
+                setAuth(false);
+            } else {
+                setAuth(result);
+            }
         };
 
         checkAuth();
     }, []);
+
     return (
         <main
             className="h-full w-screen bg-cover relative bg-center bg-no-repeat "

@@ -9,6 +9,7 @@ interface InputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   value?: string;
+  diasbled?: boolean;
 }
 const Input = (Props: InputProps) => {
   const [isFocus, setIsFocus] = useState(false);  
@@ -21,6 +22,7 @@ const Input = (Props: InputProps) => {
       onFocus={() => setIsFocus(true)}
       onBlur={() => setIsFocus(false)}
       type={Props.type}
+      disabled={Props.diasbled}
       placeholder={Props.placeholder}
       onChange={Props.onChange}
       className={twMerge(

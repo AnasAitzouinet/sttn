@@ -55,7 +55,13 @@ const trips = [
 ];
 import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import { RiAccountBoxFill, RiAccountCircleFill } from "react-icons/ri";
+import res from "@/components/Reservations/Reserverations";
 
+interface User {
+  id: string | undefined;
+    name: string | null | undefined;
+    email: string | null | undefined;
+} 
 export default function Home() {
   const router = useRouter();
   const ref = useRef(null);
@@ -63,11 +69,20 @@ export default function Home() {
   const col = useRef(null);
   const inViewCol = useInView(col, { once: true });
   const [open, setOpen] = useState(false);
-  const [auth, setAuth] = useState<string | false | JwtPayload>(false);
+  const [auth, setAuth] = useState<User | false>({
+    id: "",
+    name: "",
+    email: "",
+  });
   useEffect(() => {
     const checkAuth = async () => {
       const result = await CheckAuth();
-      setAuth(result);
+      
+      if (!result && result === undefined) {
+        setAuth(false);
+      }else {
+        setAuth(result);
+      }
     };
 
     checkAuth();

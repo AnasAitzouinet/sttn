@@ -1,13 +1,7 @@
 "use server"
-import { cookies } from "next/headers";
-
-const Logout = () => {
-  const cookiesStore = cookies();
-  cookiesStore.set("token",'')
-  if (typeof window !== "undefined") {
-    window.location.href = "/";
-  }
-  return true;
+import { auth , signOut} from "@/auth";
+const Logouts = async() => {
+  await signOut()
 };
 
-export default Logout;
+export default Logouts;

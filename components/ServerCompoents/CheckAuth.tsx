@@ -1,24 +1,21 @@
-"use server";
-import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
-
-const CheckAuth = () => {
-  try{
-    const cookiesStore = cookies();
-  const user = cookiesStore.get("token");
-  if (!user) return false;
-  const secretKey = process.env.SECRET_KEY as string;
-  const decoded = jwt.verify(user.value, secretKey);
-  if (decoded) {
-    return decoded;
-  } else {
-    console.log("error 155");
-    return false;
+"use server"
+import { auth } from "@/auth";
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+export default async function CheckAuth() {
+  const session = await auth();
+  if (!session || !session.user) {
+    return
   }
-  }catch(err){
-    console.log(err);
-    return false;
-  }
+  return {
+    id: session.user.id,
+    name: session.user.name,
+    email: session.user.email,
+    role: session.user.role,
+  };
 };
 
-export default CheckAuth;

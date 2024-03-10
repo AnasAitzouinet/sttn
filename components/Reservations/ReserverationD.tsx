@@ -26,7 +26,7 @@ interface Props {
   type?: string;
 }
 type Form = {
-  email: string | any;
+  email: string;
   phone: string;
   FullName: string;
   date: string | null;
@@ -59,18 +59,19 @@ export default function ReserverationD({
   const [loading, setLoading] = React.useState(false);
   const [types, setTypes] = React.useState("departure");
   const [loggedIn, setLoggedIn] = React.useState(false);
+
   React.useEffect(() => {
     const Auth = async () => {
-      const res = await CheckAuth();
-      if (res && typeof res !== "string") {
+      const resultat = await CheckAuth();
+      if (!resultat) return;
+      else {
+        setForm({
+          ...form,
+          email: resultat.email as string
+          , FullName: resultat.name as string
+          , userId: parseInt(resultat.id as string)
+        });
         setLoggedIn(true);
-        return setForm((prevForm) => ({
-          ...prevForm,
-          email: res.email,
-          phone: res.phone_number,
-          FullName: res.name,
-          userId: res.id,
-        }));
       }
     };
     Auth();
@@ -231,22 +232,20 @@ export default function ReserverationD({
               <div className="flex gap-2">
                 <div
                   className={`px-2 py-1 border  rounded-xl cursor-pointer transition-all duration-300 ease-in-out
-                ${
-                  type === "arrival"
-                    ? "border-blue-700 text-blue-500"
-                    : "border-gray-300/20"
-                }
+                ${type === "arrival"
+                      ? "border-blue-700 text-blue-500"
+                      : "border-gray-300/20"
+                    }
                 `}
                 >
                   Arrival
                 </div>
                 <div
                   className={`px-2 py-1 border  rounded-xl cursor-pointer transition-all duration-300 ease-in-out
-                ${
-                  type === "departure"
-                    ? "border-blue-700 text-blue-500 "
-                    : "border-gray-300/20"
-                }
+                ${type === "departure"
+                      ? "border-blue-700 text-blue-500 "
+                      : "border-gray-300/20"
+                    }
                 `}
                 >
                   Departure
@@ -306,7 +305,7 @@ export default function ReserverationD({
                         className="flex w-full justify-center items-center gap-2"
                       >
                         Date
-                      
+
                         <input
                           type="datetime-local"
                           onChange={(e) =>

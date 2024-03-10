@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { motion, useSpring, animate } from "framer-motion";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Input from "@/components/costumeInputs/Inputs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import notify from "../costumeInputs/Notify";
@@ -17,80 +17,44 @@ import Loader from "../loader";
 import Cookies from "../ServerCompoents/Cookies";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
-import Link from "next/link";
+import { useForm } from "react-hook-form";
 
-interface Props {
-  trigger: React.ReactNode;
-}
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { UserLogin } from "@/schemas";
+
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import Link from "next/link";
+import { on } from "events";
+import { Login } from "@/actions/Login";
+import { set } from "date-fns";
 
 const SignIn = () => {
-  const [loading, setLoading] = useState(false);
+
+  const form = useForm<z.infer<typeof UserLogin>>({
+    resolver: zodResolver(UserLogin),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  })
+
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | undefined>()
+  const [success, setSuccess] = useState<string | undefined>()
   const router = useRouter();
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
+ 
+  const onSubmit = (data: z.infer<typeof UserLogin>) => {
+    setError("")
+    setSuccess("")
+    startTransition(() => {
+      Login(data).then((data) => {
+         setError(data?.error)
+         setSuccess(data?.success)
+         })
+    })
+  }
 
-  const handleError = () => {
-    const EmailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
-    const { email, password } = form;
-    if (email.length && password.length) {
-      if (!EmailRegex.test(email)) {
-        notify({ message: "Email is not valid", status: "error" });
-        return false;
-      }
-      const newForm = {
-        email,
-        password,
-      };
-      return newForm;
-    } else {
-      notify({ message: "Please fill all the fields", status: "error" });
-      return false;
-    }
-  };
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      const handleErrors = handleError();
-      if (!handleErrors) return;
-      setLoading(true);
-
-      await fetch(
-        "https://gestionres-production.up.railway.app/api/users/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(handleErrors),
-        }
-      ).then(async (res) => {
-        if (res.ok) {
-          setLoading(false);
-          notify({
-            message: "Logged in successfully",
-            status: "success",
-          });
-          Cookies({
-            name: "token",
-            value: await res.json(),
-            options: {
-              maxAge: 60 * 60 * 24,
-              path: "/",
-            },
-          })
-          // router.push('/Profile');
-          window.location.reload();
-        } else {
-          setLoading(false);
-          notify({ message: "email or password are not correct", status: "error" });
-        }
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <div className="flex flex-col justify-center items-center py-5">
@@ -102,37 +66,194 @@ const SignIn = () => {
       <span className="text-sm  text-gray-300 font-medium capitalize">
         Sign in to your account
       </span>
-      <form onSubmit={handleSubmit} className="h-full w-full flex gap-5 flex-col justify-center items-center py-5">
-        <Input
-          placeholder="Email"
-          type="email"
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          className="text-white"
-        />
-        <Input
-          placeholder="Password"
-          type="password"
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-          className="text-white"
-
-        />
-        <Button
-          variant={"link"}
-          className="text-sm font-medium text-start w-full flex items-center justify-start gap-1 text-gray-300"
-          asChild
+  
+      {
+        error && <p className="text-red-400 font-bold italic">{error}</p>
+      }
+      {
+        success && <p className="text-emerald-400 font-bold italic">{success}</p>
+      }
+      <Form
+        {...form}>
+        <form onSubmit={form.handleSubmit(() => { onSubmit(form.getValues()) })}
+          className="h-full w-full flex gap-2  flex-col justify-center items-center py-5"
         >
-          <Link href={"/forgotPassword"}>
-            Forgot password?
-          </Link>
-        </Button>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormControl>
+                  <Input
+                    placeholder="email"
+                    type="email"
+                    {...field}
+                    diasbled={isPending}
+                    className="text-white w-full"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="w-full">
 
-        <button type="submit" className="bg-blue-900 hover:bg-blue-700 transition-all duration-500 text-white w-full py-2 rounded-full">
-          Sign in
-        </button>
-      </form>
+                <FormControl>
+                  <Input
+                    placeholder="password"
+                    type="password"
+                    diasbled={isPending}
+                    {...field}
+                    className="text-white"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button
+            variant={"link"}
+            className="text-sm font-medium text-start w-full flex items-center justify-start gap-1 text-gray-300"
+            asChild
+          >
+            <Link href={"/forgotPassword"}>
+              Forgot password?
+            </Link>
+          </Button>
+          <button type="submit" className="bg-blue-900 hover:bg-blue-700 transition-all duration-500 text-white w-full py-2 rounded-full">
+            Sign in
+          </button>
+        </form>
+      </Form>
     </div>
   );
 };
+
+// const SignIn = () => {
+
+//   const form = useForm<z.infer<typeof UserLogin>>({
+//     resolver: zodResolver(UserLogin),
+//     defaultValues: {
+//       email: "",
+//       password: "",
+//     },
+//   })
+
+//   const [loading, setLoading] = useState(false);
+//   const router = useRouter();
+
+//   // const [form, setForm] = useState({
+//   //   email: "",
+//   //   password: "",
+//   // });
+
+//   const handleError = () => {
+//     const EmailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
+//     const { email, password } = form;
+//     if (email.length && password.length) {
+//       if (!EmailRegex.test(email)) {
+//         notify({ message: "Email is not valid", status: "error" });
+//         return false;
+//       }
+//       const newForm = {
+//         email,
+//         password,
+//       };
+//       return newForm;
+//     } else {
+//       notify({ message: "Please fill all the fields", status: "error" });
+//       return false;
+//     }
+//   };
+//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     try {
+//       const handleErrors = handleError();
+//       if (!handleErrors) return;
+//       setLoading(true);
+
+//       await fetch(
+//         "https://gestionres-production.up.railway.app/api/users/login",
+//         {
+//           method: "POST",
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//           body: JSON.stringify(handleErrors),
+//         }
+//       ).then(async (res) => {
+//         if (res.ok) {
+//           setLoading(false);
+//           notify({
+//             message: "Logged in successfully",
+//             status: "success",
+//           });
+//           Cookies({
+//             name: "token",
+//             value: await res.json(),
+//             options: {
+//               maxAge: 60 * 60 * 24,
+//               path: "/",
+//             },
+//           })
+//           // router.push('/Profile');
+//           window.location.reload();
+//         } else {
+//           setLoading(false);
+//           notify({ message: "email or password are not correct", status: "error" });
+//         }
+//       });
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   };
+
+//   return (
+//     <div className="flex flex-col justify-center items-center py-5">
+//       <Toaster />
+//       <h1 className="text-2xl font-bold capitalize">
+//         Welcom Back our {""}
+//         <span className="text-blue-700">Traveler</span>
+//       </h1>
+//       <span className="text-sm  text-gray-300 font-medium capitalize">
+//         Sign in to your account
+//       </span>
+//       <form onSubmit={handleSubmit} className="h-full w-full flex gap-5 flex-col justify-center items-center py-5">
+//         <Input
+//           placeholder="Email"
+//           type="email"
+//           onChange={(e) => setForm({ ...form, email: e.target.value })}
+//           className="text-white"
+//         />
+//         <Input
+//           placeholder="Password"
+//           type="password"
+//           onChange={(e) => setForm({ ...form, password: e.target.value })}
+//           className="text-white"
+
+//         />
+//         <Button
+//           variant={"link"}
+//           className="text-sm font-medium text-start w-full flex items-center justify-start gap-1 text-gray-300"
+//           asChild
+//         >
+//           <Link href={"/forgotPassword"}>
+//             Forgot password?
+//           </Link>
+//         </Button>
+
+//         <button type="submit" className="bg-blue-900 hover:bg-blue-700 transition-all duration-500 text-white w-full py-2 rounded-full">
+//           Sign in
+//         </button>
+//       </form>
+//     </div>
+//   );
+// };
 const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
