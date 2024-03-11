@@ -1,5 +1,4 @@
 "use client";
-import Cta from "@/components/cta";
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { Poppins } from "next/font/google";
@@ -15,7 +14,17 @@ const Poppinss = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-const trips = [
+
+type Trips = {
+  id: number;
+  title: string;
+  img: string;
+  price: number;
+  description: string;
+  city: string;
+}
+
+const tripsMock = [
   {
     id: 1,
     title: "Adventure in the Mountains",
@@ -53,9 +62,11 @@ const trips = [
     city: "Culturalopolis",
   },
 ];
+
+
 import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import { RiAccountBoxFill, RiAccountCircleFill } from "react-icons/ri";
-import res from "@/components/Reservations/Reserverations";
+import axios from "axios";
 
 interface User {
   id: string | undefined;
@@ -74,6 +85,8 @@ export default function Home() {
     name: "",
     email: "",
   });
+  const [trips, setTrips] = useState<Trips[]>([]);
+
   useEffect(() => {
     const checkAuth = async () => {
       const result = await CheckAuth();
@@ -86,6 +99,27 @@ export default function Home() {
     };
 
     checkAuth();
+  }, []);
+
+  const FetchTrips = React.useCallback(async () => {
+    try {
+      const respons = await axios.get(
+        "https://gestionres-production.up.railway.app/Activity/top"
+      );
+      const data = await respons.data;
+      console.log(data);
+      if(data.length !== 4){
+        setTrips(tripsMock);
+      }else{
+        setTrips(data);
+      }
+    } catch (error) {
+      console.log("Failed to fetch trips", error);
+    } 
+  }, []);
+
+  React.useEffect(() => {
+    FetchTrips();
   }, []);
 
   return (

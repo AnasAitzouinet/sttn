@@ -40,7 +40,7 @@ export default async function HomeProfile( {id, name, email }: Home) {
     name: name ? name : "",
     email: email ? email : "",
   });
-
+  const router = useRouter();
   return (
     <main
       style={{
@@ -71,7 +71,9 @@ export default async function HomeProfile( {id, name, email }: Home) {
 
       <aside className="hidden
       lg:absolute  left-0 lg:w-[25%] lg:h-screen lg:flex-col lg:flex bg-gray-400/20 backdrop-blur-md justify-center py-3 items-center">
-        <Avatar className="cursor-pointer w-24 h-24">
+        <Avatar className="cursor-pointer w-24 h-24"
+        onClick={() => router.push("/")}
+        >
           <AvatarImage src="https://github.com/shadcn.png" />
           <AvatarFallback className="capitalize">
             {

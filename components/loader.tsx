@@ -7,11 +7,11 @@ interface LoaderProps {
 }
 const Loader = ({className,imgClass}:LoaderProps) => {
   return (
-    <div className={twMerge("w-screen h-screen overflow-hidden bg-gray-200",className)}>
+    <div className={twMerge("w-screen h-screen overflow-hidden bg-transparent",className)}>
       <img
-        src="/rotate.png"
+        src="/AAT_AVATAR.png"
         alt="Logo of the company"
-        className={twMerge("object-contain w-full h-full p-16  sm:p-40 animate-spin-slow transition-all",imgClass)}
+        className={twMerge("object-contain w-full h-full p-14  sm:p-40 animate-pulse transition-all",imgClass)}
       />
     </div>
   );

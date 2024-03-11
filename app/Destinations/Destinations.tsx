@@ -64,7 +64,8 @@ const Destinations = () => {
                     <img
                         src="/AAT_AVATAR.png"
                         alt="logo"
-                        className="h-16 w-16 object-cover"
+                        onClick={() => router.push("/")}
+                        className="h-16 w-16 object-cover cursor-pointer my-2"
                     />
                     <div className="text-white lg:hidden" onClick={() => setOpen(!open)}>
                         <svg

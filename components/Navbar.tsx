@@ -1,5 +1,4 @@
 "use client";
-import Cta from "@/components/cta";
 import React, { useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 interface TestsoProps {
